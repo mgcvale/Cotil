@@ -34,12 +34,6 @@ public class ClienteServiceTest {
         clienteService.add(cliente9);
         clienteService.add(cliente10);
 
-        try {
-            JsonSerializer.exportToJson(clienteService);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
         List<Cliente> expected = List.of(cliente4, cliente5);
         List<Cliente> result = clienteService.nameStartsWith("Ma");
         assert(expected.equals(result));
