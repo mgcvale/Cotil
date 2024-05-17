@@ -26,13 +26,13 @@ public class ProdutoService implements Serializable, Service {
 
     public Optional<Produto> getByName(String name) {
         return produtos.stream().filter(produto -> {
-            return Objects.equals(produto.getNome(), name);
+            return produto.getNome().equalsIgnoreCase(name);
         }).findFirst();
     }
 
     public List<Produto> findByName(String searchTerm) {
         return produtos.stream().filter(produto -> {
-            return produto.getNome().contains(searchTerm);
+            return produto.getNome().toLowerCase().contains(searchTerm.toLowerCase());
         }).collect(Collectors.toList());
     }
 

@@ -29,19 +29,19 @@ public class FuncionarioService implements Serializable, Service {
 
     public Optional<Funcionario> getByName(String name) {
         return funcionarios.stream().filter(funcionario -> {
-           return funcionario.getNome().equals(name);
+           return funcionario.getNome().equalsIgnoreCase(name);
         }).findFirst();
     }
 
     public List<Funcionario> findByName(String searchTerm) {
         return funcionarios.stream().filter(funcionario -> {
-            return funcionario.getNome().contains(searchTerm);
+            return funcionario.getNome().toLowerCase().contains(searchTerm.toLowerCase());
         }).collect(Collectors.toList());
     }
 
     public List<Funcionario> nameStartsWith(String searchTerm) {
         return funcionarios.stream().filter(funcionario -> {
-            return funcionario.getNome().startsWith(searchTerm);
+            return funcionario.getNome().toLowerCase().startsWith(searchTerm.toLowerCase());
         }).collect(Collectors.toList());
     }
 

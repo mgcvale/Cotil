@@ -1,5 +1,6 @@
 package com.github.mgcvale.projetojava.controller;
 
+import com.formdev.flatlaf.util.StringUtils;
 import com.github.mgcvale.projetojava.model.Cliente;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 
@@ -30,13 +31,13 @@ public class ClienteService implements Serializable, Service {
 
     public Optional<Cliente> getByName(String name) {
         return clientes.stream().filter(cliente -> {
-            return Objects.equals(cliente.getNome(), name);
+            return cliente.getNome().equalsIgnoreCase(name);
         }).findFirst();
     }
 
     public List<Cliente> findByName(String searchTerm) {
         return clientes.stream().filter(cliente -> {
-            return cliente.getNome().contains(searchTerm);
+            return searchTerm.toLowerCase().contains(searchTerm.toLowerCase());
         }).collect(Collectors.toList());
     }
 
