@@ -1,6 +1,8 @@
 import com.github.mgcvale.projetojava.controller.ClienteService;
+import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.Cliente;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,6 +33,12 @@ public class ClienteServiceTest {
         clienteService.add(cliente8);
         clienteService.add(cliente9);
         clienteService.add(cliente10);
+
+        try {
+            JsonSerializer.exportToJson(clienteService);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         List<Cliente> expected = List.of(cliente4, cliente5);
         List<Cliente> result = clienteService.nameStartsWith("Ma");

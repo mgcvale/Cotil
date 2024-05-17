@@ -1,0 +1,6 @@
+- salvamento de modificacoes e atualizacao de modificacoes
+- rightpanel layout dinamico
+- adicionar busca e ordenamento
+- adicionar listeners aos botoes de remocao e adicao
+- adicionar salvamento automatico ao sair
+- telas de pesquisa avancada e filtros customizados

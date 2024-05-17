@@ -1,7 +1,12 @@
 package com.github.mgcvale.projetojava.model;
 
+import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 
 public interface FieldProvider {
-    public List<Object> getAllFields();
+    List<Object> getAllFields();
+
+    List<String> getFieldNames();
+
 }

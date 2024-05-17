@@ -1,5 +1,6 @@
 package com.github.mgcvale.projetojava.model;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,10 @@ public class Cliente extends Pessoa implements IPessoa, FieldProvider {
         super(id, nome, idade);
         this.isAssociado = isAssociado;
         this.dataCadastro = dataCadastro;
+    }
+
+    public Cliente() {
+        dataCadastro = Calendar.getInstance().getTime();
     }
 
     public boolean isAssociado() {
@@ -34,14 +39,21 @@ public class Cliente extends Pessoa implements IPessoa, FieldProvider {
     @Override
     public String toString() {
         return "Cliente{" +
-                "id=" + id +
+                "isAssociado=" + isAssociado +
+                ", dataCadastro=" + dataCadastro +
                 ", nome='" + nome + '\'' +
                 ", idade=" + idade +
+                ", id=" + id +
                 '}';
     }
 
     @Override
     public List<Object> getAllFields() {
-        return List.of(nome, idade);
+        return List.of(id, nome, idade, isAssociado, dataCadastro);
+    }
+
+    @Override
+    public List<String> getFieldNames() {
+        return List.of("id", "nome", "idade", "associado", "cadastro");
     }
 }

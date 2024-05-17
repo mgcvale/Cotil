@@ -1,6 +1,8 @@
 package com.github.mgcvale.projetojava.model;
 
-public abstract class Pessoa {
+import java.io.Serializable;
+
+public abstract class Pessoa implements Serializable {
     protected String nome;
     protected int idade;
     protected int id;

@@ -7,3 +7,19 @@ opcoes de:
     - pesquisar pelo nome (contém)
     - pesquisa avancada (nova janela)
     - filtros avancados (nova janela)
+
+layout:
+    menu:
+        arquivo:
+            salvar
+            busca avancada
+            filtro customizado
+
+    esquerda:
+        topo: textfield de busca
+        meio: jscrollpane
+        baixo: botao de remover e botao de adicionar
+    direita:
+        topo/meio: panel com titledborder "informacoes do <nome da classe>", e "nenhum objeto selecionado" ou as infos do
+        objeto selecionado
+        baixo:

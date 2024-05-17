@@ -1,8 +1,9 @@
 package com.github.mgcvale.projetojava.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Produto implements FieldProvider {
+public class Produto implements FieldProvider, Serializable {
 
     private String nome;
     private String descricao;
@@ -17,6 +18,8 @@ public class Produto implements FieldProvider {
         setPreco(preco);
         this.cor = cor;
     }
+
+    public Produto() {}
 
     public String getNome() {
         return nome;
@@ -72,5 +75,10 @@ public class Produto implements FieldProvider {
     @Override
     public List<Object> getAllFields() {
         return List.of(id, nome, descricao, preco, cor);
+    }
+
+    @Override
+    public List<String> getFieldNames() {
+        return List.of("id", "nome", "descricao", "preco", "cor");
     }
 }

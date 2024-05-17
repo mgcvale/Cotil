@@ -8,5 +8,4 @@ public interface Service {
     String getObjectName();
     Class<? extends FieldProvider> getServiceClass();
     ArrayList<? extends FieldProvider> getAll();
-
 }
