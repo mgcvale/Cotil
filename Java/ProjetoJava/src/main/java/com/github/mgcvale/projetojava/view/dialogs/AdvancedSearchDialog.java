@@ -1,4 +1,4 @@
-package com.github.mgcvale.projetojava.view.frames;
+package com.github.mgcvale.projetojava.view.dialogs;
 
 public class AdvancedSearchDialog extends DialogModel implements ISearchFilter {
 

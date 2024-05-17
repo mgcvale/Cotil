@@ -1,9 +1,15 @@
 package com.github.mgcvale.projetojava.view.util;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
+import java.awt.event.*;
+import java.beans.PropertyChangeEvent;
+import java.util.Objects;
 
 public class PlaceholderTextField extends JTextField {
     private String placeholder;
@@ -14,6 +20,7 @@ public class PlaceholderTextField extends JTextField {
     public PlaceholderTextField(String placeholder) {
         this();
         this.placeholder = placeholder;
+        setTextSuper(placeholder);
     }
 
     public PlaceholderTextField() {
@@ -28,6 +35,7 @@ public class PlaceholderTextField extends JTextField {
 
     public void setPlaceholder(String placeholder) {
         this.placeholder = placeholder;
+        focusLost();
     }
 
     private void addLiteners () {
@@ -46,9 +54,9 @@ public class PlaceholderTextField extends JTextField {
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
                 if(getText().isEmpty()){
+                    placeholderActive = true;
                     setTextSuper(placeholder);
                     setForeground(placeholderForeground);
-                    placeholderActive = true;
                 }
             }
         });
@@ -64,11 +72,57 @@ public class PlaceholderTextField extends JTextField {
         focusLost();
     }
 
+    @Override
+    public String getText() {
+        if(placeholderActive)
+            return "";
+        return super.getText();
+    }
+
     private void focusLost() {
         if(getText().isEmpty()){
+            placeholderActive = true;
             setTextSuper(placeholder);
             setForeground(placeholderForeground);
-            placeholderActive = true;
         }
     }
+
+    public void addChangeListener(JTextComponent text, ChangeListener changeListener) {
+        Objects.requireNonNull(text);
+        Objects.requireNonNull(changeListener);
+        DocumentListener dl = new DocumentListener() {
+            private int lastChange = 0, lastNotifiedChange = 0;
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                lastChange++;
+                SwingUtilities.invokeLater(() -> {
+                    if (lastNotifiedChange != lastChange) {
+                        lastNotifiedChange = lastChange;
+                        changeListener.stateChanged(new ChangeEvent(text));
+                    }
+                });
+            }
+        };
+        text.addPropertyChangeListener("document", (PropertyChangeEvent e) -> {
+            Document d1 = (Document)e.getOldValue();
+            Document d2 = (Document)e.getNewValue();
+            if (d1 != null) d1.removeDocumentListener(dl);
+            if (d2 != null) d2.addDocumentListener(dl);
+            dl.changedUpdate(null);
+        });
+        Document d = text.getDocument();
+        if (d != null) d.addDocumentListener(dl);
+    }
+
 }

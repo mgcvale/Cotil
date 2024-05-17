@@ -3,6 +3,7 @@ package com.github.mgcvale.projetojava.controller;
 import com.formdev.flatlaf.util.StringUtils;
 import com.github.mgcvale.projetojava.model.Cliente;
 import com.github.mgcvale.projetojava.model.FieldProvider;
+import com.github.mgcvale.projetojava.model.Funcionario;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class ClienteService implements Serializable, Service {
 
     public List<Cliente> findByName(String searchTerm) {
         return clientes.stream().filter(cliente -> {
-            return searchTerm.toLowerCase().contains(searchTerm.toLowerCase());
+            return cliente.getNome().toLowerCase().contains(searchTerm.toLowerCase());
         }).collect(Collectors.toList());
     }
 

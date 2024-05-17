@@ -1,4 +1,4 @@
-package com.github.mgcvale.projetojava.view.frames;
+package com.github.mgcvale.projetojava.view.dialogs;
 
 import com.github.mgcvale.projetojava.view.tabs.ClienteCrudView;
 import com.github.mgcvale.projetojava.view.tabs.FuncionarioCrudView;

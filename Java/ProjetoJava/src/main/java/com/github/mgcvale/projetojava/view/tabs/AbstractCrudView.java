@@ -7,18 +7,21 @@ import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
 public abstract class AbstractCrudView<T extends Service> extends JPanel {
     protected JScrollPane scrollPane;
     protected JTable table;
-    protected UneditableTableModel tableModel;
+    protected DefaultTableModel tableModel;
     protected T serviceObject;
-    protected JButton addBtn, removeBtn, advancedSearchBtn, customFilterBtn;
+    protected JButton addBtn, removeBtn;
     protected PlaceholderTextField searchTf;
-    protected JPanel searchPanel, rightPanel, infoPanel;
+    protected JPanel searchPanel, infoPanel;
     protected FieldProvider selectedObject = null;
 
     protected void initAll() {
@@ -32,12 +35,6 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
 
         //removeBtn
         removeBtn = new JButton("Remover");
-
-        //advancedSearchBtn
-        advancedSearchBtn = new JButton("Pesquisa Avancada");
-
-        //customFilterBtn
-        customFilterBtn = new JButton("Filtros customizados");
 
         //searchTf
         searchTf = new PlaceholderTextField();
@@ -55,6 +52,7 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
 
         initializeTable();
         updateTable();
+        addListeners();
     }
 
     protected void layComponents() {
@@ -99,14 +97,6 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
             infoPanel.add(warning);
         }
 
-        //right panel
-        rightPanel = new JPanel();
-        rightPanel.setLayout(new GridLayout(1, 2, 20 ,20));
-        rightPanel.setBorder(new EmptyBorder(new Insets(0, 20, 0, 20)));
-        rightPanel.add(advancedSearchBtn);
-        rightPanel.add(customFilterBtn);
-
-
         //this panel
         setLayout(new GridBagLayout());
         gbc.fill = GridBagConstraints.BOTH;
@@ -119,16 +109,30 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
         add(searchPanel, gbc);
 
         gbc.gridx++;
-        gbc.weightx = 0.1;
-        gbc.weighty = 0.9;
+        gbc.weightx = 0.2;
+        gbc.weighty = 1;
         gbc.gridheight = 1;
         gbc.insets.right = 10;
         add(infoPanel, gbc);
+    }
 
-        gbc.insets.bottom = 20;
-        gbc.gridy++;
-        gbc.weighty = 0;
-        add(rightPanel, gbc);
+    protected void addListeners() {
+        searchTf.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateTable(searchTf.getText());
+            }
+        });
     }
 
     protected void initializeTable() {
@@ -136,21 +140,35 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
             throw new NullPointerException("The service object needs to be instanciated in the superclass!");
         }
         try {
+            ArrayList<Integer> smallColumnsIndexes = new ArrayList<>();
+            ArrayList<Integer> mediumColumnsIndexes = new ArrayList<>();
             for (String fieldName : serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldNames()) {
                 tableModel.addColumn(fieldName);
+                if(fieldName.equals("idade") || fieldName.equals("id")) {
+                    smallColumnsIndexes.add(table.getColumnCount()-1);
+                }
+                if(fieldName.equals("preco") || fieldName.equals("cor") || fieldName.equals("associado")) {
+                    mediumColumnsIndexes.add(table.getColumnCount()-1);
+                }
             }
+
+            //make small columns small and medium columns medium
+            smallColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(48));
+            mediumColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(108));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     protected void updateTable() {
-        if(serviceObject == null) {
-            throw new NullPointerException("The service object needs to be instanciated in the superclass!");
-        }
-        for(FieldProvider object : serviceObject.getAll()) {
-            tableModel.addRow(object.getAllFields().toArray());
-        }
+        updateTable("");
+    }
+
+    protected abstract void updateTable(String search);
+
+    public Class<? extends Service> getService() {
+        return serviceObject.getClass();
     }
 
     private static class UneditableTableModel extends DefaultTableModel {
@@ -159,6 +177,4 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
             return false;
         }
     }
-
-
 }
