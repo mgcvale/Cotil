@@ -1,6 +1,8 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
+import com.github.mgcvale.projetojava.controller.ClienteService;
 import com.github.mgcvale.projetojava.controller.Service;
+import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 import com.github.mgcvale.projetojava.view.util.JTableUtils;
 import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
@@ -10,16 +12,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public abstract class AbstractCrudView<T extends Service> extends JPanel {
     protected JScrollPane scrollPane;
@@ -186,6 +184,11 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
 
     protected abstract void updateTable(String search);
 
+    public void refreshTable() {
+        updateTable(searchTf.getText());
+        System.out.println("refreshing");
+    }
+
     protected void updateInfoPanel(int objectIndex) {
         System.out.println("updated: " + objectIndex);
 
@@ -220,8 +223,12 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
         repaint();
     }
 
-    public Class<? extends Service> getService() {
+    public Class<? extends Service> getServiceClass() {
         return serviceObject.getClass();
+    }
+
+    public Service getService() {
+        return serviceObject;
     }
 
     private static class UneditableTableModel extends DefaultTableModel {

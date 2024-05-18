@@ -32,4 +32,14 @@ public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
         }
     }
 
+    @Override
+    public void refreshTable() {
+        try {
+            serviceObject = JsonSerializer.importJson("Funcionario", FuncionarioService.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.refreshTable();
+    }
+
 }

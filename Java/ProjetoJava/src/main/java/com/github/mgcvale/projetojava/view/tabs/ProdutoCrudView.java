@@ -35,5 +35,14 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         }
     }
 
+    @Override
+    public void refreshTable() {
+        try {
+            serviceObject = JsonSerializer.importJson("Produto", ProdutoService.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.refreshTable();
+    }
 
 }

@@ -37,4 +37,13 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
         }
     }
 
+    @Override
+    public void refreshTable() {
+        try {
+            serviceObject = JsonSerializer.importJson("Cliente", ClienteService.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        super.refreshTable();
+    }
 }
