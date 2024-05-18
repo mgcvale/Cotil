@@ -4,9 +4,14 @@ import com.github.mgcvale.projetojava.controller.ClienteService;
 import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.Cliente;
 import com.github.mgcvale.projetojava.model.FieldProvider;
+import com.github.mgcvale.projetojava.view.util.JTableUtils;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 public class ClienteCrudView extends AbstractCrudView<ClienteService> {
 
@@ -31,4 +36,5 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
             tableModel.addRow(object.getAllFields().toArray());
         }
     }
+
 }

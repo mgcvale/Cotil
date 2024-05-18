@@ -2,6 +2,7 @@ package com.github.mgcvale.projetojava.view.tabs;
 
 import com.github.mgcvale.projetojava.controller.Service;
 import com.github.mgcvale.projetojava.model.FieldProvider;
+import com.github.mgcvale.projetojava.view.util.JTableUtils;
 import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
 
 import javax.swing.*;
@@ -9,10 +10,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractCrudView<T extends Service> extends JPanel {
     protected JScrollPane scrollPane;
@@ -35,6 +42,7 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
 
         //removeBtn
         removeBtn = new JButton("Remover");
+        removeBtn.setEnabled(false);
 
         //searchTf
         searchTf = new PlaceholderTextField();
@@ -44,6 +52,7 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
         tableModel = new UneditableTableModel();
 
         table = new JTable(tableModel);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JLabel headerLabels = (JLabel) table.getTableHeader().getDefaultRenderer();
         headerLabels.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -88,14 +97,11 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
 
         //info panel
         infoPanel = new JPanel();
-        if(selectedObject != null) {
-            // add stuff dinamically
-        } else {
-            infoPanel.setLayout(new GridLayout(1, 1));
-            JLabel warning = new JLabel("Nenhum objeto selecionado!");
-            warning.setHorizontalAlignment(SwingConstants.CENTER);
-            infoPanel.add(warning);
-        }
+        infoPanel.setLayout(new BorderLayout());
+        JLabel warning = new JLabel("Nenhum " + serviceObject.getObjectName() + " selecionado!");
+        warning.setHorizontalAlignment(SwingConstants.CENTER);
+        infoPanel.add(warning, BorderLayout.CENTER);
+        infoPanel.setBorder(new EmptyBorder(new Insets(8, 8, 8, 8)));
 
         //this panel
         setLayout(new GridBagLayout());
@@ -109,10 +115,11 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
         add(searchPanel, gbc);
 
         gbc.gridx++;
-        gbc.weightx = 0.2;
+        gbc.weightx = 0;
         gbc.weighty = 1;
         gbc.gridheight = 1;
         gbc.insets.right = 10;
+        gbc.insets = new Insets(10, 10, 10, 15);
         add(infoPanel, gbc);
     }
 
@@ -133,6 +140,18 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
                 updateTable(searchTf.getText());
             }
         });
+
+        table.getSelectionModel().addListSelectionListener(_ -> updateInfoPanel(table.getSelectedRow()));
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                infoPanel.setMinimumSize(new Dimension(getWidth()/4, 10000));
+                repaint();
+            }
+        });
+
     }
 
     protected void initializeTable() {
@@ -167,6 +186,40 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
 
     protected abstract void updateTable(String search);
 
+    protected void updateInfoPanel(int objectIndex) {
+        System.out.println("updated: " + objectIndex);
+
+        if(objectIndex == -1) { //selection is null
+            infoPanel.removeAll();
+            infoPanel.setLayout(new BorderLayout());
+            JLabel warning = new JLabel("Nenhum " + serviceObject.getObjectName() + " selecionado!");
+            warning.setHorizontalAlignment(SwingConstants.CENTER);
+            infoPanel.add(warning, BorderLayout.CENTER);
+            removeBtn.setEnabled(false);
+            revalidate();
+            repaint();
+            return;
+        }
+
+        String[] fields = JTableUtils.getRowValues(table, objectIndex);
+        String[] fieldNames = JTableUtils.getTableTitles(table);
+
+        infoPanel.removeAll();
+        infoPanel.setLayout(new GridLayout(fields.length, 1, 0, 0));
+
+        for(int i=0; i<fields.length; i++) {
+            JTextArea info = new JTextArea(fieldNames[i] + ": " + fields[i]);
+            info.setLineWrap(true);
+            info.setBorder(BorderFactory.createEmptyBorder());
+            info.setBackground(UIManager.getColor("label.background"));
+            infoPanel.add(info);
+        }
+        infoPanel.setMinimumSize(new Dimension(getWidth()/4, getHeight()));
+        removeBtn.setEnabled(true);
+        revalidate();
+        repaint();
+    }
+
     public Class<? extends Service> getService() {
         return serviceObject.getClass();
     }
@@ -177,4 +230,5 @@ public abstract class AbstractCrudView<T extends Service> extends JPanel {
             return false;
         }
     }
+
 }
