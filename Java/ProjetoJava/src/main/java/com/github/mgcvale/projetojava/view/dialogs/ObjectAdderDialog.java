@@ -163,7 +163,8 @@ public class ObjectAdderDialog extends JFrame {
                 l.objectCreated(newInstance);
                 dispose();
             } catch (InvocationTargetException e) {
-                JOptionPane.showMessageDialog(ObjectAdderDialog.this, e.getMessage());
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(ObjectAdderDialog.this, e.getCause().getMessage());
             } catch (NullPointerException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(ObjectAdderDialog.this, "O listener está nulo.");
