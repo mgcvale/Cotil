@@ -151,7 +151,7 @@ public class ObjectAdderDialog extends JFrame {
                     if(fieldInput instanceof JCheckBox) {
                         args.add(Boolean.toString(((JCheckBox) fieldInput).isSelected()));
                     } else if (fieldInput instanceof JComboBox<?>) {
-                        args.add((String) ((JComboBox<?>) fieldInput).getSelectedItem());
+                        args.add(((Enum) ((JComboBox<?>) fieldInput).getSelectedItem()).name());
                     } else if(fieldInput instanceof JTextField) {
                         args.add(((JTextField) fieldInput).getText());
                     } else {
