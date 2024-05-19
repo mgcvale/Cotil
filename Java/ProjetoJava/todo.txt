@@ -2,4 +2,4 @@
 - adicionar listeners aos botoes de remocao e adicao
 - telas de pesquisa avancada e filtros customizados
 - arrumar os testes que estao todos errados
-- adicionar excessoes de argumento ilegal no modelo para tratametno no ObjectAdderDialog
+- separar a view em view em controller pq esse projeto tá ficando muito maior do que eu imaginava que ia ficar
