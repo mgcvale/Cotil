@@ -9,12 +9,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FuncionarioService implements Serializable, Service {
+public class FuncionarioService implements Serializable, Service<Funcionario> {
 
     protected ArrayList<Funcionario> funcionarios = new ArrayList<Funcionario>();
 
-    public void add(Funcionario funcionario) {
-        funcionarios.add(funcionario);
+    @Override
+    public void add(Funcionario object) {
+        funcionarios.add(object);
     }
 
     public void remove(Funcionario funcionario) {
@@ -56,7 +57,7 @@ public class FuncionarioService implements Serializable, Service {
     }
 
     @Override
-    public Class<? extends FieldProvider> getServiceClass() {
+    public Class<Funcionario> getServiceClass() {
         return Funcionario.class;
     }
 }

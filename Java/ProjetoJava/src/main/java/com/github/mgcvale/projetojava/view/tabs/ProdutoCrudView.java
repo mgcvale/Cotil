@@ -27,8 +27,6 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
             throw new NullPointerException("The service object needs to be instanciated in the superclass!");
         }
 
-        System.out.println(search);
-
         tableModel.setRowCount(0);
         for(FieldProvider object : serviceObject.findByName(search)) {
             tableModel.addRow(object.getAllFields().toArray());

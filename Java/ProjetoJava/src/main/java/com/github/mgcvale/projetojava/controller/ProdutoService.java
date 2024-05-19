@@ -6,12 +6,13 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ProdutoService implements Serializable, Service {
+public class ProdutoService implements Serializable, Service<Produto> {
 
     private ArrayList<Produto> produtos = new ArrayList<Produto>();
 
-    public void add(Produto produto) {
-        produtos.add(produto);
+    @Override
+    public void add(Produto object) {
+        produtos.add(object);
     }
 
     public void remove(Produto produto) {
@@ -47,7 +48,7 @@ public class ProdutoService implements Serializable, Service {
     }
 
     @Override
-    public Class<? extends FieldProvider> getServiceClass() {
+    public Class<Produto> getServiceClass() {
         return Produto.class;
     }
 }

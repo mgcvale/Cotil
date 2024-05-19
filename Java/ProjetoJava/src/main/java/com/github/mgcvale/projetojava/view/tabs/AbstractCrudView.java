@@ -19,7 +19,7 @@ import java.awt.event.ComponentEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public abstract class AbstractCrudView<T extends Service> extends JPanel {
+public abstract class AbstractCrudView<T extends Service<?>> extends JPanel {
     protected JScrollPane scrollPane;
     protected JTable table;
     protected DefaultTableModel tableModel;

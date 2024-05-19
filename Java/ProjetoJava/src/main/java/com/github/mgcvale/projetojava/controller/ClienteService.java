@@ -12,12 +12,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ClienteService implements Serializable, Service {
+public class ClienteService implements Serializable, Service<Cliente> {
 
     private ArrayList<Cliente> clientes = new ArrayList<>();
 
-    public void add(Cliente cliente) {
-        clientes.add(cliente);
+    @Override
+    public void add(Cliente object) {
+        clientes.add(object);
     }
 
     public void remove(Cliente cliente) {
@@ -59,7 +60,7 @@ public class ClienteService implements Serializable, Service {
     }
 
     @Override
-    public Class<? extends FieldProvider> getServiceClass() {
+    public Class<Cliente> getServiceClass() {
         return Cliente.class;
     }
 }

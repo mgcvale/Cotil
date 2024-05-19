@@ -1,7 +1,10 @@
 package com.github.mgcvale.projetojava;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.github.mgcvale.projetojava.controller.ProdutoService;
+import com.github.mgcvale.projetojava.model.Produto;
 import com.github.mgcvale.projetojava.view.ProgramView;
+import com.github.mgcvale.projetojava.view.dialogs.ObjectAdderDialog;
 
 import javax.swing.*;
 import javax.xml.transform.Source;
@@ -38,6 +41,7 @@ public class Application {
         //create gui
         SwingUtilities.invokeLater(() -> {
             new ProgramView().createAndShowGUI();
+            new ObjectAdderDialog(new Produto()).createAndShowGUI();
         });
     }
 }
