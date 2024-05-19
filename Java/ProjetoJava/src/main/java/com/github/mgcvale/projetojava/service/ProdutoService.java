@@ -1,5 +1,4 @@
-package com.github.mgcvale.projetojava.controller;
-import com.github.mgcvale.projetojava.model.FieldProvider;
+package com.github.mgcvale.projetojava.service;
 import com.github.mgcvale.projetojava.model.Produto;
 
 import java.io.Serializable;

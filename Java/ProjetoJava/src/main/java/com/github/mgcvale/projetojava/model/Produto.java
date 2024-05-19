@@ -1,5 +1,7 @@
 package com.github.mgcvale.projetojava.model;
 
+import com.github.mgcvale.projetojava.exception.InvalidColorException;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,6 +19,46 @@ public class Produto implements FieldProvider, Serializable {
         this.id = id;
         setPreco(preco);
         this.cor = cor;
+    }
+
+    public Produto(List<String> args) {
+        setNome(args.get(1));
+        setDescricao(args.get(2));
+        try {
+            setId(Integer.parseInt(args.get(0)));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException("ID inválido: " + args.get(0));
+        }
+        try {
+            setPreco(Double.parseDouble(args.get(3)));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException("Preco inválido: " + args.get(3));
+        }
+        try {
+            setCor(Cor.valueOf(args.get(5)));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidColorException("Cor inválida: " + args.get(5));
+        }
+    }
+
+    public Produto(String id, String nome, String descricao, String preco, String cor) throws NumberFormatException, InvalidColorException {
+        setNome(nome);
+        setDescricao(descricao);
+        try {
+            setId(Integer.parseInt(id));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException("ID inválido: " + id);
+        }
+        try {
+            setPreco(Double.parseDouble(preco));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException("Preco inválido: " + preco);
+        }
+        try {
+            setCor(Cor.valueOf(cor));
+        } catch (IllegalArgumentException e) {
+            throw new InvalidColorException("Cor inválida: " + cor);
+        }
     }
 
     public Produto() {}
@@ -80,5 +122,10 @@ public class Produto implements FieldProvider, Serializable {
     @Override
     public List<String> getFieldNames() {
         return List.of("id", "nome", "descricao", "preco", "cor");
+    }
+
+    @Override
+    public List<Object> getFieldTypesAsInstance() {
+        return List.of(0, "", "", 0d, Cor.PRETO);
     }
 }

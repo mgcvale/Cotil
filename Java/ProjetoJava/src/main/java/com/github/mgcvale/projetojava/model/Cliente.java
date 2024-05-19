@@ -7,17 +7,36 @@ import java.util.List;
 public class Cliente extends Pessoa implements IPessoa, FieldProvider {
 
     private boolean isAssociado;
-    private final Date dataCadastro;
+    private String cpf;
 
-    public Cliente(int id, String nome, int idade, boolean isAssociado, Date dataCadastro) {
+    public Cliente(int id, String nome, int idade, boolean isAssociado, String cpf) {
         super(id, nome, idade);
         this.isAssociado = isAssociado;
-        this.dataCadastro = dataCadastro;
+        this.cpf = cpf;
     }
 
-    public Cliente() {
-        dataCadastro = Calendar.getInstance().getTime();
+    public Cliente(List<String> args) {
+        setNome(args.get(1));
+        setCpf(args.get(4));
+
+        try {
+            setAssociado(Boolean.parseBoolean(args.get(3)));
+        } catch(IllegalArgumentException e) {
+            throw new IllegalArgumentException("Associacão inválida: " + args.get(3));
+        }
+        try {
+            setId(Integer.parseInt(args.get(0)));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException("ID inválido: " + args.get(0));
+        }
+        try {
+            setIdade(Integer.parseInt(args.get(2)));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException("Idade inválida: " + args.get(2));
+        }
     }
+
+    public Cliente() {}
 
     public boolean isAssociado() {
         return isAssociado;
@@ -27,8 +46,12 @@ public class Cliente extends Pessoa implements IPessoa, FieldProvider {
         isAssociado = associado;
     }
 
-    public Date getDataCadastro() {
-        return dataCadastro;
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     @Override
@@ -40,7 +63,7 @@ public class Cliente extends Pessoa implements IPessoa, FieldProvider {
     public String toString() {
         return "Cliente{" +
                 "isAssociado=" + isAssociado +
-                ", dataCadastro=" + dataCadastro +
+                ", cpf=" + cpf +
                 ", nome='" + nome + '\'' +
                 ", idade=" + idade +
                 ", id=" + id +
@@ -49,11 +72,16 @@ public class Cliente extends Pessoa implements IPessoa, FieldProvider {
 
     @Override
     public List<Object> getAllFields() {
-        return List.of(id, nome, idade, isAssociado, dataCadastro);
+        return List.of(id, nome, idade, isAssociado, cpf);
     }
 
     @Override
     public List<String> getFieldNames() {
-        return List.of("id", "nome", "idade", "associado", "cadastro");
+        return List.of("id", "nome", "idade", "associado", "cpf");
+    }
+
+    @Override
+    public List<Object> getFieldTypesAsInstance() {
+        return List.of(0, "", 0, false, "");
     }
 }

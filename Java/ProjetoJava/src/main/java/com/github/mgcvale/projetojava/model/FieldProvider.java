@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface FieldProvider {
     List<Object> getAllFields();
-
     List<String> getFieldNames();
+    List<Object> getFieldTypesAsInstance();
+
 }

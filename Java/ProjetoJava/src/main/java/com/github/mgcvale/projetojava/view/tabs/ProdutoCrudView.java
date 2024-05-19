@@ -1,12 +1,15 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
-import com.github.mgcvale.projetojava.controller.ClienteService;
-import com.github.mgcvale.projetojava.controller.ProdutoService;
-import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
-import com.github.mgcvale.projetojava.model.FieldProvider;
+import com.github.mgcvale.projetojava.model.Cliente;
+import com.github.mgcvale.projetojava.model.Funcionario;
 import com.github.mgcvale.projetojava.model.Produto;
+import com.github.mgcvale.projetojava.service.ProdutoService;
+import com.github.mgcvale.projetojava.serializer.JsonSerializer;
+import com.github.mgcvale.projetojava.model.FieldProvider;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.Optional;
 
 public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
 
@@ -17,9 +20,26 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
             serviceObject = new ProdutoService();
             e.printStackTrace();
         }
+        if(serviceObject == null)
+            serviceObject = new ProdutoService();
         super.initAll();
+        addListeners();
     }
 
+
+    @Override
+    protected void addListeners() {
+        super.addListeners();
+        removeBtn.addActionListener(_ -> {
+            int selectedID = (int) table.getValueAt(table.getSelectedRow(), 0);
+            Optional<Produto> obj = serviceObject.getById(selectedID);
+            obj.ifPresentOrElse(produto -> serviceObject.remove(produto), () -> {
+                JOptionPane.showMessageDialog(ProdutoCrudView.this,
+                        "Parece que esta entrada não existe; tente atualizar a lista de entradas ou reiniciar o programa.");
+            });
+            updateTable();
+        });
+    }
 
     @Override
     protected void updateTable(String search) {
@@ -41,6 +61,12 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
             e.printStackTrace();
         }
         super.refreshTable();
+    }
+
+    @Override
+    public void objectCreated(FieldProvider object) {
+        serviceObject.add((Produto) object);
+        updateTable(searchTf.getText());
     }
 
 }

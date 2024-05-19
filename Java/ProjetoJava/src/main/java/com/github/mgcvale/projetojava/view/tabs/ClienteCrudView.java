@@ -1,28 +1,42 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
-import com.github.mgcvale.projetojava.controller.ClienteService;
-import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.Cliente;
+import com.github.mgcvale.projetojava.model.Funcionario;
+import com.github.mgcvale.projetojava.service.ClienteService;
+import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
-import com.github.mgcvale.projetojava.view.util.JTableUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 public class ClienteCrudView extends AbstractCrudView<ClienteService> {
 
     public ClienteCrudView() {
+
         try {
             serviceObject = JsonSerializer.importJson("Cliente", ClienteService.class);
         } catch (IOException e) {
             serviceObject = new ClienteService();
             e.printStackTrace();
         }
+        if(serviceObject == null)
+            serviceObject = new ClienteService();
         initAll();
+    }
+
+    @Override
+    protected void addListeners() {
+        super.addListeners();
+        removeBtn.addActionListener(_ -> {
+            int selectedID = (int) table.getValueAt(table.getSelectedRow(), 0);
+            Optional<Cliente> obj = serviceObject.getById(selectedID);
+            obj.ifPresentOrElse(cliente -> serviceObject.remove(cliente), () -> {
+                JOptionPane.showMessageDialog(ClienteCrudView.this,
+                        "Parece que esta entrada não existe; tente atualizar a lista de entradas ou reiniciar o programa.");
+            });
+            updateTable();
+        });
     }
 
     @Override
@@ -45,5 +59,11 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
             e.printStackTrace();
         }
         super.refreshTable();
+    }
+
+    @Override
+    public void objectCreated(FieldProvider object) {
+        serviceObject.add((Cliente) object);
+        updateTable(searchTf.getText());
     }
 }

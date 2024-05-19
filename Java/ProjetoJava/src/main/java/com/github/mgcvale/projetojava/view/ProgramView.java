@@ -1,6 +1,6 @@
 package com.github.mgcvale.projetojava.view;
 
-import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
+import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.view.dialogs.AdvancedSearchDialog;
 import com.github.mgcvale.projetojava.view.tabs.AbstractCrudView;
 import com.github.mgcvale.projetojava.view.tabs.ClienteCrudView;

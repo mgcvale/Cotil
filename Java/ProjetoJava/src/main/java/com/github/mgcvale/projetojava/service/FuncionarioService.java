@@ -1,7 +1,6 @@
-package com.github.mgcvale.projetojava.controller;
+package com.github.mgcvale.projetojava.service;
 
 import com.github.mgcvale.projetojava.model.Funcionario;
-import com.github.mgcvale.projetojava.model.FieldProvider;
 
 import java.io.Serializable;
 import java.util.ArrayList;

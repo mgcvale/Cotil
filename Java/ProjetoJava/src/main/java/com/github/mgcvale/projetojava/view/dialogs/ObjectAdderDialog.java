@@ -1,25 +1,37 @@
 package com.github.mgcvale.projetojava.view.dialogs;
 
+import com.github.mgcvale.projetojava.model.Cor;
 import com.github.mgcvale.projetojava.model.FieldProvider;
+import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ObjectAdderDialog extends JFrame {
     private FieldProvider objectInstance;
     private int dataQuantity;
     private int fieldsPerPage = 3;
     private int currentCard;
+    List<Object> dataTypes;
+    private ObjectCreationListener l;
 
     private JButton addBtn, cancelBtn, nextBtn, prevBtn;
     private JLabel[] fieldLabels;
-    private JTextField[] fieldTextFields;
+    private ArrayList<Component> fieldInputs;
     JPanel[] cards;
 
     public ObjectAdderDialog(FieldProvider provider) {
         objectInstance = provider;
         dataQuantity = provider.getFieldNames().size();
+    }
+
+    public void addObjectCreationListener(ObjectCreationListener l) {
+        this.l = l;
+        System.out.println("adicionado, valor: " + l);
     }
 
     public void createAndShowGUI() {
@@ -40,10 +52,27 @@ public class ObjectAdderDialog extends JFrame {
         prevBtn = new JButton("página anterior");
 
         fieldLabels = new JLabel[dataQuantity];
-        fieldTextFields = new JTextField[dataQuantity];
+        fieldInputs = new ArrayList<>();
+        dataTypes = objectInstance.getFieldTypesAsInstance();
         for(int i=0; i<dataQuantity; i++) {
             fieldLabels[i] = new JLabel(objectInstance.getFieldNames().get(i) + ":");
-            fieldTextFields[i] = new JTextField();
+            Object obj = dataTypes.get(i);
+            if(obj instanceof String) {
+                PlaceholderTextField fieldInput = new PlaceholderTextField(fieldLabels[i].getText() + " texto");
+                fieldInputs.add(fieldInput);
+            }
+            if(obj instanceof Number) {
+                PlaceholderTextField fieldInput = new PlaceholderTextField(fieldLabels[i].getText() + " número");
+                fieldInputs.add(fieldInput);
+            }
+            if(obj instanceof Boolean) {
+                JCheckBox fieldInput = new JCheckBox(fieldLabels[i].getText().substring(0, fieldLabels[i].getText().length()-1));
+                fieldInputs.add(fieldInput);
+            }
+            if(obj instanceof Cor) {
+                fieldInputs.add(new JComboBox<>(Cor.values()));
+
+            }
         }
         cards = new JPanel[dataQuantity/fieldsPerPage + 1];
     }
@@ -88,7 +117,7 @@ public class ObjectAdderDialog extends JFrame {
                 gbc.insets.right = 0;
             dataPane.add(fieldLabels[fieldsPerPage*index + i], gbc);
             gbc.gridy++;
-            dataPane.add(fieldTextFields[fieldsPerPage*index + i], gbc);
+            dataPane.add(fieldInputs.get(fieldsPerPage * index + i), gbc);
             gbc.gridy--;
             gbc.gridx++;
         }
@@ -114,6 +143,39 @@ public class ObjectAdderDialog extends JFrame {
             ((CardLayout) getContentPane().getLayout()).show(getContentPane(), Integer.toString(currentCard));
         });
         cancelBtn.addActionListener(_ -> dispose());
+
+        addBtn.addActionListener(_ -> {
+            try {
+                List<String> args = new ArrayList<>();
+                for(Component fieldInput : fieldInputs) {
+                    if(fieldInput instanceof JCheckBox) {
+                        args.add(Boolean.toString(((JCheckBox) fieldInput).isSelected()));
+                    } else if (fieldInput instanceof JComboBox<?>) {
+                        args.add((String) ((JComboBox<?>) fieldInput).getSelectedItem());
+                    } else if(fieldInput instanceof JTextField) {
+                        args.add(((JTextField) fieldInput).getText());
+                    } else {
+                        System.out.println("????");
+                        args.add("");
+                    }
+                }
+                var newInstance = objectInstance.getClass().getDeclaredConstructor(List.class).newInstance(args);
+                l.objectCreated(newInstance);
+                dispose();
+            } catch (InvocationTargetException e) {
+                JOptionPane.showMessageDialog(ObjectAdderDialog.this, e.getMessage());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(ObjectAdderDialog.this, "O listener está nulo.");
+            } catch(Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(ObjectAdderDialog.this,
+                        "Houve um erro interno ao adicionar o objeto. Informe este bug para o desenvolvedor.");
+            }
+        });
+
     }
+
+
 
 }

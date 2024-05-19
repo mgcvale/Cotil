@@ -1,24 +1,44 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
-import com.github.mgcvale.projetojava.controller.ClienteService;
-import com.github.mgcvale.projetojava.controller.FuncionarioService;
-import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
+import com.github.mgcvale.projetojava.model.Cliente;
+import com.github.mgcvale.projetojava.model.Funcionario;
+import com.github.mgcvale.projetojava.service.FuncionarioService;
+import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.Optional;
 
 public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
 
     public FuncionarioCrudView() {
+
         try {
             serviceObject = JsonSerializer.importJson("Funcionario", FuncionarioService.class);
         } catch (IOException e) {
             serviceObject = new FuncionarioService();
             e.printStackTrace();
         }
+        if(serviceObject == null)
+            serviceObject = new FuncionarioService();
         initAll();
     }
 
+
+    @Override
+    protected void addListeners() {
+        super.addListeners();
+        removeBtn.addActionListener(_ -> {
+            int selectedID = (int) table.getValueAt(table.getSelectedRow(), 0);
+            Optional<Funcionario> obj = serviceObject.getById(selectedID);
+            obj.ifPresentOrElse(funcionario -> serviceObject.remove(funcionario), () -> {
+                JOptionPane.showMessageDialog(FuncionarioCrudView.this,
+                        "Parece que esta entrada não existe; tente atualizar a lista de entradas ou reiniciar o programa.");
+            });
+            updateTable();
+        });
+    }
 
     @Override
     protected void updateTable(String search) {
@@ -40,6 +60,12 @@ public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
             e.printStackTrace();
         }
         super.refreshTable();
+    }
+
+    @Override
+    public void objectCreated(FieldProvider object) {
+        serviceObject.add((Funcionario) object);
+        updateTable(searchTf.getText());
     }
 
 }

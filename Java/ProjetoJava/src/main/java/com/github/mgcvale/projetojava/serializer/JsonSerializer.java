@@ -1,6 +1,6 @@
-package com.github.mgcvale.projetojava.controller.serializer;
+package com.github.mgcvale.projetojava.serializer;
 
-import com.github.mgcvale.projetojava.controller.Service;
+import com.github.mgcvale.projetojava.service.Service;
 import com.github.mgcvale.projetojava.utils.FileUtils;
 import com.google.gson.Gson;
 

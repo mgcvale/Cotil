@@ -1,14 +1,10 @@
-package com.github.mgcvale.projetojava.controller;
+package com.github.mgcvale.projetojava.service;
 
-import com.formdev.flatlaf.util.StringUtils;
 import com.github.mgcvale.projetojava.model.Cliente;
-import com.github.mgcvale.projetojava.model.FieldProvider;
-import com.github.mgcvale.projetojava.model.Funcionario;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,6 +18,10 @@ public class ClienteService implements Serializable, Service<Cliente> {
     }
 
     public void remove(Cliente cliente) {
+        if(clientes.contains(cliente))
+            System.out.println("contém; dá pra remover");
+        else
+            System.out.println("nao contém; n da pra remover");
         clientes.remove(cliente);
     }
 

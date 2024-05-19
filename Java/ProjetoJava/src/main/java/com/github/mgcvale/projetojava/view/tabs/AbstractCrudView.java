@@ -1,9 +1,9 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
-import com.github.mgcvale.projetojava.controller.ClienteService;
-import com.github.mgcvale.projetojava.controller.Service;
-import com.github.mgcvale.projetojava.controller.serializer.JsonSerializer;
+import com.github.mgcvale.projetojava.service.Service;
 import com.github.mgcvale.projetojava.model.FieldProvider;
+import com.github.mgcvale.projetojava.view.dialogs.ObjectAdderDialog;
+import com.github.mgcvale.projetojava.view.dialogs.ObjectCreationListener;
 import com.github.mgcvale.projetojava.view.util.JTableUtils;
 import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
 
@@ -16,10 +16,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-public abstract class AbstractCrudView<T extends Service<?>> extends JPanel {
+public abstract class AbstractCrudView<T extends Service<?>> extends JPanel implements ObjectCreationListener {
     protected JScrollPane scrollPane;
     protected JTable table;
     protected DefaultTableModel tableModel;
@@ -150,6 +150,16 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel {
             }
         });
 
+        addBtn.addActionListener(_ -> {
+            try {
+                System.out.println("ALKSDJLAKJSD");
+                ObjectAdderDialog dialog = new ObjectAdderDialog(serviceObject.getServiceClass().getDeclaredConstructor().newInstance());
+                dialog.addObjectCreationListener(AbstractCrudView.this);
+                dialog.createAndShowGUI();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     protected void initializeTable() {
@@ -237,5 +247,4 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel {
             return false;
         }
     }
-
 }
