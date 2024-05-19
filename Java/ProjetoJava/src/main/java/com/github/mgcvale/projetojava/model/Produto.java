@@ -35,9 +35,9 @@ public class Produto implements FieldProvider, Serializable {
             throw new IllegalArgumentException("Preco inválido: " + args.get(3));
         }
         try {
-            setCor(Cor.valueOf(args.get(5)));
+            setCor(Cor.valueOf(args.get(4)));
         } catch (IllegalArgumentException e) {
-            throw new InvalidColorException("Cor inválida: " + args.get(5));
+            throw new InvalidColorException("Cor inválida: " + args.get(4));
         }
     }
 
