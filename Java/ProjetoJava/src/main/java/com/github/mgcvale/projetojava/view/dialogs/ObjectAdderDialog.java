@@ -7,6 +7,8 @@ import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,8 +177,12 @@ public class ObjectAdderDialog extends JFrame {
             }
         });
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                l.objectCreationExited();
+            }
+        });
     }
-
-
-
 }

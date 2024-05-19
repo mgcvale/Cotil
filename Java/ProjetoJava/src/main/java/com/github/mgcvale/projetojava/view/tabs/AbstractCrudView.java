@@ -28,6 +28,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
     protected PlaceholderTextField searchTf;
     protected JPanel searchPanel, infoPanel;
     protected FieldProvider selectedObject = null;
+    protected static boolean isObjectAdderDialogOpened = false;
 
     protected void initAll() {
         initComponents();
@@ -152,14 +153,17 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
 
         addBtn.addActionListener(_ -> {
             try {
-                System.out.println("ALKSDJLAKJSD");
+                if(isObjectAdderDialogOpened)
+                    return;
                 ObjectAdderDialog dialog = new ObjectAdderDialog(serviceObject.getServiceClass().getDeclaredConstructor().newInstance());
                 dialog.addObjectCreationListener(AbstractCrudView.this);
                 dialog.createAndShowGUI();
+                isObjectAdderDialogOpened = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+
     }
 
     protected void initializeTable() {
@@ -246,5 +250,10 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         public boolean isCellEditable(int row, int column) {
             return false;
         }
+    }
+
+    @Override
+    public void objectCreationExited() {
+        isObjectAdderDialogOpened = false;
     }
 }
