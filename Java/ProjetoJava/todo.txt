@@ -3,3 +3,4 @@
 - telas de pesquisa avancada e filtros customizados
 - arrumar os testes que estao todos errados
 - separar a view em view em controller pq esse projeto tá ficando muito maior do que eu imaginava que ia ficar
+- adicionar verificador de integridade do json, pra não adicionar objetos quebrados (sem um campo, por exemplo)
