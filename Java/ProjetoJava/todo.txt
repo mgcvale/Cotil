@@ -1,6 +1,5 @@
-- salvamento de modificacoes e atualizacao de modificacoes
-- rightpanel layout dinamico
-- adicionar busca e ordenamento
+- adicionar ordenamento
 - adicionar listeners aos botoes de remocao e adicao
-- adicionar salvamento automatico ao sair
 - telas de pesquisa avancada e filtros customizados
+- arrumar os testes que estao todos errados
+- adicionar excessoes de argumento ilegal no modelo para tratametno no ObjectAdderDialog
