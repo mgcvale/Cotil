@@ -28,13 +28,15 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
     @Override
     protected void addListeners() {
         super.addListeners();
-        removeBtn.addActionListener(_ -> {
+        removeBtn.addActionListener(e -> {
             int selectedID = (int) table.getValueAt(table.getSelectedRow(), 0);
             Optional<Cliente> obj = serviceObject.getById(selectedID);
-            obj.ifPresentOrElse(cliente -> serviceObject.remove(cliente), () -> {
+            if(obj.isPresent()) {
+                serviceObject.remove(obj.get());
+            } else {
                 JOptionPane.showMessageDialog(ClienteCrudView.this,
                         "Parece que esta entrada não existe; tente atualizar a lista de entradas ou reiniciar o programa.");
-            });
+            }
             updateTable();
         });
     }

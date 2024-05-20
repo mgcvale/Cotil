@@ -29,13 +29,15 @@ public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
     @Override
     protected void addListeners() {
         super.addListeners();
-        removeBtn.addActionListener(_ -> {
+        removeBtn.addActionListener(e -> {
             int selectedID = (int) table.getValueAt(table.getSelectedRow(), 0);
             Optional<Funcionario> obj = serviceObject.getById(selectedID);
-            obj.ifPresentOrElse(funcionario -> serviceObject.remove(funcionario), () -> {
+            if(obj.isPresent()) {
+                serviceObject.remove(obj.get());
+            } else {
                 JOptionPane.showMessageDialog(FuncionarioCrudView.this,
                         "Parece que esta entrada não existe; tente atualizar a lista de entradas ou reiniciar o programa.");
-            });
+            }
             updateTable();
         });
     }

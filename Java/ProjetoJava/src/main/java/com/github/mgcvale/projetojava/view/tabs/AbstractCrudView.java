@@ -13,6 +13,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -23,6 +25,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
     protected JScrollPane scrollPane;
     protected JTable table;
     protected DefaultTableModel tableModel;
+    protected TableRowSorter<TableModel> sorter;
     protected T serviceObject;
     protected JButton addBtn, removeBtn;
     protected PlaceholderTextField searchTf;
@@ -61,6 +64,36 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         initializeTable();
         updateTable();
         addListeners();
+    }
+
+
+    protected void initializeTable() {
+        if(serviceObject == null) {
+            throw new NullPointerException("The service object needs to be instanciated in the superclass!");
+        }
+        try {
+            ArrayList<Integer> smallColumnsIndexes = new ArrayList<>();
+            ArrayList<Integer> mediumColumnsIndexes = new ArrayList<>();
+            for (String fieldName : serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldNames()) {
+                tableModel.addColumn(fieldName);
+                if(fieldName.equals("idade") || fieldName.equals("id")) {
+                    smallColumnsIndexes.add(table.getColumnCount()-1);
+                }
+                if(fieldName.equals("preco") || fieldName.equals("cor") || fieldName.equals("associado")) {
+                    mediumColumnsIndexes.add(table.getColumnCount()-1);
+                }
+            }
+
+            //make small columns small and medium columns medium
+            smallColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(48));
+            mediumColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(108));
+
+            sorter = new TableRowSorter<>(tableModel);
+            table.setRowSorter(sorter);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     protected void layComponents() {
@@ -140,56 +173,30 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             }
         });
 
-        table.getSelectionModel().addListSelectionListener(_ -> updateInfoPanel(table.getSelectedRow()));
+        table.getSelectionModel().addListSelectionListener(e -> updateInfoPanel(table.getSelectedRow()));
 
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
-                infoPanel.setMinimumSize(new Dimension(getWidth()/4, 10000));
+                infoPanel.setMinimumSize(new Dimension(getWidth() / 4, 10000));
                 repaint();
             }
         });
 
-        addBtn.addActionListener(_ -> {
+        addBtn.addActionListener(e -> {
             try {
-                if(isObjectAdderDialogOpened)
+                if (isObjectAdderDialogOpened)
                     return;
                 ObjectAdderDialog dialog = new ObjectAdderDialog(serviceObject.getServiceClass().getDeclaredConstructor().newInstance());
                 dialog.addObjectCreationListener(AbstractCrudView.this);
                 dialog.createAndShowGUI();
                 isObjectAdderDialogOpened = true;
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
         });
 
-    }
-
-    protected void initializeTable() {
-        if(serviceObject == null) {
-            throw new NullPointerException("The service object needs to be instanciated in the superclass!");
-        }
-        try {
-            ArrayList<Integer> smallColumnsIndexes = new ArrayList<>();
-            ArrayList<Integer> mediumColumnsIndexes = new ArrayList<>();
-            for (String fieldName : serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldNames()) {
-                tableModel.addColumn(fieldName);
-                if(fieldName.equals("idade") || fieldName.equals("id")) {
-                    smallColumnsIndexes.add(table.getColumnCount()-1);
-                }
-                if(fieldName.equals("preco") || fieldName.equals("cor") || fieldName.equals("associado")) {
-                    mediumColumnsIndexes.add(table.getColumnCount()-1);
-                }
-            }
-
-            //make small columns small and medium columns medium
-            smallColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(48));
-            mediumColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(108));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     protected void updateTable() {

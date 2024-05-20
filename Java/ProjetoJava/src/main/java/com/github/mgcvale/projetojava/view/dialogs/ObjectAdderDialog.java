@@ -136,17 +136,17 @@ public class ObjectAdderDialog extends JFrame {
     }
 
     private void addListeners() {
-        nextBtn.addActionListener(_ -> {
+        nextBtn.addActionListener(e -> {
             currentCard++;
             ((CardLayout) getContentPane().getLayout()).show(getContentPane(), Integer.toString(currentCard));
         });
-        prevBtn.addActionListener(_ -> {
+        prevBtn.addActionListener(e -> {
             currentCard--;
             ((CardLayout) getContentPane().getLayout()).show(getContentPane(), Integer.toString(currentCard));
         });
-        cancelBtn.addActionListener(_ -> dispose());
+        cancelBtn.addActionListener(e -> dispose());
 
-        addBtn.addActionListener(_ -> {
+        addBtn.addActionListener(e -> {
             try {
                 List<String> args = new ArrayList<>();
                 for(Component fieldInput : fieldInputs) {
@@ -161,17 +161,17 @@ public class ObjectAdderDialog extends JFrame {
                         args.add("");
                     }
                 }
-                var newInstance = objectInstance.getClass().getDeclaredConstructor(List.class).newInstance(args);
+                FieldProvider newInstance = objectInstance.getClass().getDeclaredConstructor(List.class).newInstance(args);
                 l.objectCreated(newInstance);
                 dispose();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(ObjectAdderDialog.this, e.getCause().getMessage());
-            } catch (NullPointerException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException e1) {
+                e1.printStackTrace();
+                JOptionPane.showMessageDialog(ObjectAdderDialog.this, e1.getCause().getMessage());
+            } catch (NullPointerException e2) {
+                e2.printStackTrace();
                 JOptionPane.showMessageDialog(ObjectAdderDialog.this, "O listener está nulo.");
-            } catch(Exception e) {
-                e.printStackTrace();
+            } catch(Exception e3) {
+                e3.printStackTrace();
                 JOptionPane.showMessageDialog(ObjectAdderDialog.this,
                         "Houve um erro interno ao adicionar o objeto. Informe este bug para o desenvolvedor.");
             }
