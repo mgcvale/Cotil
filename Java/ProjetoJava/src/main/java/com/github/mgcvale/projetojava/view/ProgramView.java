@@ -1,7 +1,6 @@
 package com.github.mgcvale.projetojava.view;
 
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
-import com.github.mgcvale.projetojava.view.dialogs.AdvancedSearchDialog;
 import com.github.mgcvale.projetojava.view.tabs.AbstractCrudView;
 import com.github.mgcvale.projetojava.view.tabs.ClienteCrudView;
 import com.github.mgcvale.projetojava.view.tabs.FuncionarioCrudView;
@@ -23,8 +22,6 @@ public class ProgramView extends JFrame {
     private JMenuBar menuBar;
     private JMenu fileMenu;
     private JMenuItem save;
-    private JMenuItem advancedSearch;
-    private JMenuItem customFilter;
     private JMenuItem refresh;
 
     public void createAndShowGUI() {
@@ -50,15 +47,11 @@ public class ProgramView extends JFrame {
     }
 
     private void initMenu() {
-        customFilter = new JMenuItem("Filtro especial");
-        advancedSearch = new JMenuItem("Busca avancada");
         save = new JMenuItem("Salvar modificacões");
         refresh = new JMenuItem("Atualizar lista");
 
         fileMenu = new JMenu("Arquivo");
         fileMenu.add(save);
-        fileMenu.add(advancedSearch);
-        fileMenu.add(customFilter);
         fileMenu.add(refresh);
 
         menuBar = new JMenuBar();
@@ -73,8 +66,6 @@ public class ProgramView extends JFrame {
 
 
     private void addListeners() {
-        advancedSearch.addActionListener(e -> new AdvancedSearchDialog().createAndShowGUI("Advanced Search"));
-
         save.addActionListener(e -> {
             try {
                 exportJsons();
@@ -114,8 +105,6 @@ public class ProgramView extends JFrame {
         JsonSerializer.exportToJson(clienteCrudView.getService());
         JsonSerializer.exportToJson(produtoCrudView.getService());
         JsonSerializer.exportToJson(funcionarioCrudView.getService());
-
-        advancedSearch.addActionListener(e -> new AdvancedSearchDialog().createAndShowGUI("Advanced Search"));
     }
 
 }

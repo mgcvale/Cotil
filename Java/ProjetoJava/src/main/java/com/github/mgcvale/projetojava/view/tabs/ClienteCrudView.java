@@ -7,6 +7,7 @@ import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -23,6 +24,35 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
         if(serviceObject == null)
             serviceObject = new ClienteService();
         initAll();
+    }
+
+    @Override
+    protected void layComponents() {
+        super.layComponents();
+
+
+        JLabel youngerThanEighteenLabel = new JLabel("Abaixo de 18 anos: ");
+        JLabel olderThanSixtyLabel = new JLabel("Acima de 60 anos: ");
+        JLabel avgAgeLabel = new JLabel("Idade Médio: ");
+        JPanel bottomPane = new JPanel(new GridLayout(1, 3, 10, 0));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 10, 10, 0);
+
+        gbc.gridy = 0;
+        gbc.gridx = 0;
+        bottomPane.add(youngerThanEighteenLabel, gbc);
+
+        gbc.gridx++;
+        bottomPane.add(olderThanSixtyLabel, gbc);
+
+        gbc.gridx++;
+        bottomPane.add(avgAgeLabel, gbc);
+
+        gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        searchPanel.add(bottomPane, gbc);
     }
 
     @Override

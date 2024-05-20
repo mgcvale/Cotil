@@ -8,6 +8,7 @@ import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -26,6 +27,26 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         addListeners();
     }
 
+    @Override
+    protected void layComponents() {
+        super.layComponents();
+
+        JLabel avgPriceLabel = new JLabel("Preço Médio: ");
+        JLabel greaterAvgPriceLabel = new JLabel("Acima do Preço Médio: ");
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 10, 10, 0);
+
+        gbc.gridy = 3;
+        gbc.gridx = 0;
+        gbc.weighty = 0;
+        gbc.weightx = 0.5;
+        gbc.gridwidth = 1;
+        searchPanel.add(avgPriceLabel, gbc);
+
+        gbc.gridx++;
+        searchPanel.add(greaterAvgPriceLabel, gbc);
+    }
 
     @Override
     protected void addListeners() {
