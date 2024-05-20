@@ -4,6 +4,7 @@ import com.github.mgcvale.projetojava.service.Service;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 import com.github.mgcvale.projetojava.view.dialogs.ObjectAdderDialog;
 import com.github.mgcvale.projetojava.view.dialogs.ObjectCreationListener;
+import com.github.mgcvale.projetojava.view.util.ClassifiedJTableModel;
 import com.github.mgcvale.projetojava.view.util.JTableUtils;
 import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
 
@@ -12,19 +13,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractCrudView<T extends Service<?>> extends JPanel implements ObjectCreationListener {
     protected JScrollPane scrollPane;
     protected JTable table;
-    protected DefaultTableModel tableModel;
+    protected ClassifiedJTableModel tableModel;
     protected TableRowSorter<TableModel> sorter;
     protected T serviceObject;
     protected JButton addBtn, removeBtn;
@@ -74,8 +74,11 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         try {
             ArrayList<Integer> smallColumnsIndexes = new ArrayList<>();
             ArrayList<Integer> mediumColumnsIndexes = new ArrayList<>();
+            List<Object> typeInstances = serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldTypesAsInstance();
+
             for (String fieldName : serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldNames()) {
                 tableModel.addColumn(fieldName);
+                tableModel.setColumnClass(tableModel.getColumnCount()-1, typeInstances.get(tableModel.getColumnCount()-1).getClass());
                 if(fieldName.equals("idade") || fieldName.equals("id")) {
                     smallColumnsIndexes.add(table.getColumnCount()-1);
                 }
@@ -88,8 +91,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             smallColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(48));
             mediumColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(108));
 
-            sorter = new TableRowSorter<>(tableModel);
-            table.setRowSorter(sorter);
+            table.setAutoCreateRowSorter(true);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -252,7 +254,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         return serviceObject;
     }
 
-    private static class UneditableTableModel extends DefaultTableModel {
+    private static class UneditableTableModel extends ClassifiedJTableModel {
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
