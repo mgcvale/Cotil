@@ -13,6 +13,10 @@ import java.util.Optional;
 
 public class ClienteCrudView extends AbstractCrudView<ClienteService> {
 
+    private JLabel youngerThanEighteenLabel;
+    private JLabel olderThanSixtyLabel;
+    private JLabel avgAgeLabel;
+
     public ClienteCrudView() {
 
         try {
@@ -31,9 +35,9 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
         super.layComponents();
 
 
-        JLabel youngerThanEighteenLabel = new JLabel("Abaixo de 18 anos: ");
-        JLabel olderThanSixtyLabel = new JLabel("Acima de 60 anos: ");
-        JLabel avgAgeLabel = new JLabel("Idade Médio: ");
+        youngerThanEighteenLabel = new JLabel("Abaixo de 18 anos: ");
+        olderThanSixtyLabel = new JLabel("Acima de 60 anos: ");
+        avgAgeLabel = new JLabel("Idade Médio: ");
         JPanel bottomPane = new JPanel(new GridLayout(1, 3, 10, 0));
 
         GridBagConstraints gbc = new GridBagConstraints();

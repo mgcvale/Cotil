@@ -14,6 +14,9 @@ import java.util.Optional;
 
 public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
 
+    private JLabel avgPriceLabel;
+    private JLabel greatestAvgPriceLabel;
+
     public ProdutoCrudView() {
         try {
             serviceObject = JsonSerializer.importJson("Produto", ProdutoService.class);
@@ -31,8 +34,8 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
     protected void layComponents() {
         super.layComponents();
 
-        JLabel avgPriceLabel = new JLabel("Preço Médio: ");
-        JLabel greaterAvgPriceLabel = new JLabel("Acima do Preço Médio: ");
+        avgPriceLabel = new JLabel("Preço Médio: ");
+        greatestAvgPriceLabel = new JLabel("Acima do Preço Médio: ");
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 10, 10, 0);
@@ -45,7 +48,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         searchPanel.add(avgPriceLabel, gbc);
 
         gbc.gridx++;
-        searchPanel.add(greaterAvgPriceLabel, gbc);
+        searchPanel.add(greatestAvgPriceLabel, gbc);
     }
 
     @Override
