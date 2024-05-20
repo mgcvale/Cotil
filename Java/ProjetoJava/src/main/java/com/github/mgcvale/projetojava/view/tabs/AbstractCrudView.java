@@ -1,7 +1,6 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
 import com.github.mgcvale.projetojava.service.Service;
-import com.github.mgcvale.projetojava.model.FieldProvider;
 import com.github.mgcvale.projetojava.view.dialogs.ObjectAdderDialog;
 import com.github.mgcvale.projetojava.view.dialogs.ObjectCreationListener;
 import com.github.mgcvale.projetojava.view.util.ClassifiedJTableModel;
@@ -13,8 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -25,12 +23,11 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
     protected JScrollPane scrollPane;
     protected JTable table;
     protected ClassifiedJTableModel tableModel;
-    protected TableRowSorter<TableModel> sorter;
     protected T serviceObject;
     protected JButton addBtn, removeBtn;
     protected PlaceholderTextField searchTf;
     protected JPanel searchPanel, infoPanel;
-    protected FieldProvider selectedObject = null;
+    protected DefaultTableCellRenderer leftRenderer;
     protected static boolean isObjectAdderDialogOpened = false;
 
     protected void initAll() {
@@ -50,7 +47,13 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         searchTf = new PlaceholderTextField();
         searchTf.setPlaceholder("Search");
 
-        //table
+        initializeTable();
+        updateTable();
+        addListeners();
+    }
+
+    protected void initializeTable() {
+        //table model and scroll pane
         tableModel = new UneditableTableModel();
 
         table = new JTable(tableModel);
@@ -61,17 +64,17 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         scrollPane = new JScrollPane(table);
         scrollPane.setBorder(new LineBorder(Color.BLACK, 1));
 
-        initializeTable();
-        updateTable();
-        addListeners();
-    }
+        //centered renderer
+        leftRenderer = new DefaultTableCellRenderer();
+        leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
 
-
-    protected void initializeTable() {
         if(serviceObject == null) {
             throw new NullPointerException("The service object needs to be instanciated in the superclass!");
         }
+
+        // create columns based on the names of the fields, as well as their types
         try {
+            //array lists to store the columns that should be a little smaller
             ArrayList<Integer> smallColumnsIndexes = new ArrayList<>();
             ArrayList<Integer> mediumColumnsIndexes = new ArrayList<>();
             List<Object> typeInstances = serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldTypesAsInstance();
@@ -88,11 +91,14 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             }
 
             //make small columns small and medium columns medium
-            smallColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(48));
+            smallColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(56));
             mediumColumnsIndexes.forEach(index -> table.getColumnModel().getColumn(index).setMaxWidth(108));
 
-            table.setAutoCreateRowSorter(true);
+            //center columns
+            table.getColumnModel().getColumns().asIterator().forEachRemaining(tableColumn -> tableColumn.setCellRenderer(leftRenderer));
 
+            //add sorter
+            table.setAutoCreateRowSorter(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -215,24 +221,26 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
     protected void updateInfoPanel(int objectIndex) {
         System.out.println("updated: " + objectIndex);
 
-        if(objectIndex == -1) { //selection is null
+        if(objectIndex == -1) { // the selection is null
             infoPanel.removeAll();
             infoPanel.setLayout(new BorderLayout());
             JLabel warning = new JLabel("Nenhum " + serviceObject.getObjectName() + " selecionado!");
             warning.setHorizontalAlignment(SwingConstants.CENTER);
             infoPanel.add(warning, BorderLayout.CENTER);
             removeBtn.setEnabled(false);
+
             revalidate();
             repaint();
             return;
         }
 
+        // create table fields and fieldnames, and empty layout
         String[] fields = JTableUtils.getRowValues(table, objectIndex);
         String[] fieldNames = JTableUtils.getTableTitles(table);
-
         infoPanel.removeAll();
-        infoPanel.setLayout(new GridLayout(fields.length, 1, 0, 0));
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 
+        //add things in the grid layout
         for(int i=0; i<fields.length; i++) {
             JTextArea info = new JTextArea(fieldNames[i] + ": " + fields[i]);
             info.setLineWrap(true);
@@ -240,6 +248,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             info.setBackground(UIManager.getColor("label.background"));
             infoPanel.add(info);
         }
+
         infoPanel.setMinimumSize(new Dimension(getWidth()/4, getHeight()));
         removeBtn.setEnabled(true);
         revalidate();

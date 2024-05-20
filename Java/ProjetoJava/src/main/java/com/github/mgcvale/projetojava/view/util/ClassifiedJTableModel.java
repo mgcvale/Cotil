@@ -1,20 +1,12 @@
 package com.github.mgcvale.projetojava.view.util;
 
-import javax.swing.*;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
 import java.util.HashMap;
 
-public class ClassifiedJTable extends JTable {
+public class ClassifiedJTableModel extends DefaultTableModel {
     HashMap<Integer, Class<?>> tableClasses;
 
-    public ClassifiedJTable() {
-        super();
-        tableClasses = new HashMap<>();
-    }
-
-    public ClassifiedJTable(TableModel tableModel) {
-        super(tableModel);
+    public ClassifiedJTableModel() {
         tableClasses = new HashMap<>();
     }
 
