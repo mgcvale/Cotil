@@ -73,18 +73,18 @@ public class ProgramView extends JFrame {
 
 
     private void addListeners() {
-        advancedSearch.addActionListener(_ -> new AdvancedSearchDialog().createAndShowGUI("Advanced Search"));
+        advancedSearch.addActionListener(e -> new AdvancedSearchDialog().createAndShowGUI("Advanced Search"));
 
-        save.addActionListener(_ -> {
+        save.addActionListener(e -> {
             try {
                 exportJsons();
                 JOptionPane.showMessageDialog(ProgramView.this, "Dados salvos com sucesso.");
-            } catch (IOException e) {
+            } catch (IOException ex) {
                 JOptionPane.showMessageDialog(ProgramView.this, "Não foi possível salvar os dados modificados.");
             }
         });
 
-        refresh.addActionListener(_ -> {
+        refresh.addActionListener(e -> {
             ((AbstractCrudView<?>) tabbedPane.getSelectedComponent()).refreshTable();
         });
 
@@ -114,6 +114,8 @@ public class ProgramView extends JFrame {
         JsonSerializer.exportToJson(clienteCrudView.getService());
         JsonSerializer.exportToJson(produtoCrudView.getService());
         JsonSerializer.exportToJson(funcionarioCrudView.getService());
+
+        advancedSearch.addActionListener(e -> new AdvancedSearchDialog().createAndShowGUI("Advanced Search"));
     }
 
 }
