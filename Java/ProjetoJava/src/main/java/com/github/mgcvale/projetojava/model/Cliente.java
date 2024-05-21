@@ -9,6 +9,13 @@ public class Cliente extends Pessoa implements IPessoa, FieldProvider {
     private boolean isAssociado;
     private String cpf;
 
+    public final int ID_ORDINAL = 0;
+    public final int NOME_ORDINAL = 1;
+    public final int IDADE_ORDINAL = 2;
+    public final int ISASSOCIADO_ORDINAL = 3;
+    public final int CPF_ORDINAL = 4;
+
+
     public Cliente(int id, String nome, int idade, boolean isAssociado, String cpf) {
         super(id, nome, idade);
         this.isAssociado = isAssociado;
@@ -16,23 +23,23 @@ public class Cliente extends Pessoa implements IPessoa, FieldProvider {
     }
 
     public Cliente(List<String> args) {
-        setNome(args.get(1));
-        setCpf(args.get(4));
+        setNome(args.get(NOME_ORDINAL));
+        setCpf(args.get(CPF_ORDINAL));
 
         try {
-            setAssociado(Boolean.parseBoolean(args.get(3)));
+            setAssociado(Boolean.parseBoolean(args.get(ISASSOCIADO_ORDINAL)));
         } catch(IllegalArgumentException e) {
-            throw new IllegalArgumentException("Associacão inválida: " + args.get(3));
+            throw new IllegalArgumentException("Associacão inválida: " + args.get(ISASSOCIADO_ORDINAL));
         }
         try {
-            setId(Integer.parseInt(args.get(0)));
+            setId(Integer.parseInt(args.get(ID_ORDINAL)));
         } catch(NumberFormatException e) {
-            throw new IllegalArgumentException("ID inválido: " + args.get(0));
+            throw new IllegalArgumentException("ID inválido: " + args.get(ID_ORDINAL));
         }
         try {
-            setIdade(Integer.parseInt(args.get(2)));
+            setIdade(Integer.parseInt(args.get(IDADE_ORDINAL)));
         } catch(NumberFormatException e) {
-            throw new IllegalArgumentException("Idade inválida: " + args.get(2));
+            throw new IllegalArgumentException("Idade inválida: " + args.get(IDADE_ORDINAL));
         }
     }
 

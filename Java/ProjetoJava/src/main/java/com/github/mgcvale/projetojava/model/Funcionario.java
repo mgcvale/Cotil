@@ -9,6 +9,12 @@ public class Funcionario extends Pessoa implements IPessoa, FieldProvider {
     private double salario;
     private String senioridade;
 
+    public static final int ID_ORDINAL          = 0;
+    public static final int NOME_ORDINAL        = 1;
+    public static final int IDADE_ORDINAL       = 2;
+    public static final int SALARIO_ORDINAL     = 3;
+    public static final int SENIORIDADE_ORDINAL = 4;
+
     public Funcionario(int id, String nome, int idade, double salario, String senioridade) {
         super(id, nome, idade);
         setSalario(salario);
@@ -16,23 +22,23 @@ public class Funcionario extends Pessoa implements IPessoa, FieldProvider {
     }
 
     public Funcionario(List<String> args) {
-        setNome(args.get(1));
-        setSenioridade(args.get(4));
+        setNome(args.get(NOME_ORDINAL));
+        setSenioridade(args.get(SENIORIDADE_ORDINAL));
 
         try {
-            setIdade(Integer.parseInt(args.get(2)));
+            setIdade(Integer.parseInt(args.get(IDADE_ORDINAL)));
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Idade inválida: " + args.get(2));
+            throw new IllegalArgumentException("Idade inválida: " + args.get(IDADE_ORDINAL));
         }
         try {
-            setId(Integer.parseInt(args.get(0)));
+            setId(Integer.parseInt(args.get(ID_ORDINAL)));
         } catch(NumberFormatException e) {
-            throw new IllegalArgumentException("ID inválido: " + args.get(0));
+            throw new IllegalArgumentException("ID inválido: " + args.get(IDADE_ORDINAL));
         }
         try {
-            setSalario(Double.parseDouble(args.get(3)));
+            setSalario(Double.parseDouble(args.get(SALARIO_ORDINAL)));
         } catch(NumberFormatException e) {
-            throw new IllegalArgumentException("Salário inválido: " + args.get(3));
+            throw new IllegalArgumentException("Salário inválido: " + args.get(SALARIO_ORDINAL));
         }
     }
 
