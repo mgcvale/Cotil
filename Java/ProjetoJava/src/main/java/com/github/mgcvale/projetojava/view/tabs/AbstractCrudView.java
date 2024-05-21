@@ -26,9 +26,10 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
     protected T serviceObject;
     protected JButton addBtn, removeBtn;
     protected PlaceholderTextField searchTf;
-    protected JPanel searchPanel, infoPanel;
+    protected JPanel searchPane, infoPane;
     protected DefaultTableCellRenderer leftRenderer;
     protected static boolean isObjectAdderDialogOpened = false;
+    JComboBox<String> searchByCombo;
 
     protected void initAll() {
         initComponents();
@@ -46,6 +47,9 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         //searchTf
         searchTf = new PlaceholderTextField();
         searchTf.setPlaceholder("Search");
+
+        //search by combo box
+        searchByCombo = new JComboBox<>(new String[]{"Nome"});
 
         initializeTable();
         updateTable();
@@ -107,20 +111,33 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
     protected void layComponents() {
         //panels
         //search panel
-        searchPanel = new JPanel(new GridBagLayout());
+        searchPane = new JPanel(new GridBagLayout());
+        JPanel advSearchPane = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        //advanced search pane
+        gbc.gridx = 0; gbc.gridy = 0;
+        gbc.weightx = 1; gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        advSearchPane.add(searchTf, gbc);
+
+        gbc.insets.left = 5;
+        gbc.weightx = 0.2;
+        gbc.gridx++;
+        advSearchPane.add(searchByCombo, gbc);
+
+        gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 0, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1;
         gbc.gridwidth = 2;
-        searchPanel.add(searchTf, gbc);
+        searchPane.add(advSearchPane, gbc);
 
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridy++;
         gbc.weighty=1;
-        searchPanel.add(scrollPane, gbc);
+        searchPane.add(scrollPane, gbc);
 
         gbc.insets.bottom = 10;
         gbc.insets.right = 0;
@@ -129,19 +146,19 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         gbc.gridy++;
         gbc.gridwidth = 1;
         gbc.weightx = 0.5;
-        searchPanel.add(addBtn, gbc);
+        searchPane.add(addBtn, gbc);
 
         gbc.insets.right = 10;
         gbc.gridx++;
-        searchPanel.add(removeBtn, gbc);
+        searchPane.add(removeBtn, gbc);
 
         //info panel
-        infoPanel = new JPanel();
-        infoPanel.setLayout(new BorderLayout());
+        infoPane = new JPanel();
+        infoPane.setLayout(new BorderLayout());
         JLabel warning = new JLabel("Nenhum " + serviceObject.getObjectName() + " selecionado!");
         warning.setHorizontalAlignment(SwingConstants.CENTER);
-        infoPanel.add(warning, BorderLayout.CENTER);
-        infoPanel.setBorder(new EmptyBorder(new Insets(8, 8, 8, 8)));
+        infoPane.add(warning, BorderLayout.CENTER);
+        infoPane.setBorder(new EmptyBorder(new Insets(8, 8, 8, 8)));
 
         //this panel
         setLayout(new GridBagLayout());
@@ -152,7 +169,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         gbc.gridheight = 2;
         gbc.weighty = 1;
         gbc.insets = new Insets(10, 10, 10, 0);
-        add(searchPanel, gbc);
+        add(searchPane, gbc);
 
         gbc.gridx++;
         gbc.weightx = 0;
@@ -160,7 +177,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         gbc.gridheight = 1;
         gbc.insets.right = 10;
         gbc.insets = new Insets(10, 10, 10, 15);
-        add(infoPanel, gbc);
+        add(infoPane, gbc);
     }
 
     protected void addListeners() {
@@ -187,7 +204,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             @Override
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
-                infoPanel.setMinimumSize(new Dimension(getWidth() / 4, 10000));
+                infoPane.setMinimumSize(new Dimension(getWidth() / 4, 10000));
                 repaint();
             }
         });
@@ -222,11 +239,11 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         System.out.println("updated: " + objectIndex);
 
         if(objectIndex == -1) { // the selection is null
-            infoPanel.removeAll();
-            infoPanel.setLayout(new BorderLayout());
+            infoPane.removeAll();
+            infoPane.setLayout(new BorderLayout());
             JLabel warning = new JLabel("Nenhum " + serviceObject.getObjectName() + " selecionado!");
             warning.setHorizontalAlignment(SwingConstants.CENTER);
-            infoPanel.add(warning, BorderLayout.CENTER);
+            infoPane.add(warning, BorderLayout.CENTER);
             removeBtn.setEnabled(false);
 
             revalidate();
@@ -237,8 +254,8 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         // create table fields and fieldnames, and empty layout
         String[] fields = JTableUtils.getRowValues(table, objectIndex);
         String[] fieldNames = JTableUtils.getTableTitles(table);
-        infoPanel.removeAll();
-        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPane.removeAll();
+        infoPane.setLayout(new BoxLayout(infoPane, BoxLayout.Y_AXIS));
 
         //add things in the grid layout
         for(int i=0; i<fields.length; i++) {
@@ -246,10 +263,10 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             info.setLineWrap(true);
             info.setBorder(BorderFactory.createEmptyBorder());
             info.setBackground(UIManager.getColor("label.background"));
-            infoPanel.add(info);
+            infoPane.add(info);
         }
 
-        infoPanel.setMinimumSize(new Dimension(getWidth()/4, getHeight()));
+        infoPane.setMinimumSize(new Dimension(getWidth()/4, getHeight()));
         removeBtn.setEnabled(true);
         revalidate();
         repaint();

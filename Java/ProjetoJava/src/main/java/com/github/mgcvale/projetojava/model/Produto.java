@@ -6,6 +6,11 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Produto implements FieldProvider, Serializable {
+    public final static int ID_ORDINAL = 0;
+    public final static int NOME_ORDINAL = 1;
+    public final static int DESCRICAO_ORDINAL = 2;
+    public final static int PRECO_ORDINAL = 3;
+    public final static int COR_ORDINAL = 4;
 
     private String nome;
     private String descricao;
@@ -22,22 +27,22 @@ public class Produto implements FieldProvider, Serializable {
     }
 
     public Produto(List<String> args) {
-        setNome(args.get(1));
-        setDescricao(args.get(2));
+        setNome(args.get(NOME_ORDINAL));
+        setDescricao(args.get(DESCRICAO_ORDINAL));
         try {
-            setId(Integer.parseInt(args.get(0)));
+            setId(Integer.parseInt(args.get(ID_ORDINAL)));
         } catch(NumberFormatException e) {
-            throw new IllegalArgumentException("ID inválido: " + args.get(0));
+            throw new IllegalArgumentException("ID inválido: " + args.get(ID_ORDINAL));
         }
         try {
-            setPreco(Double.parseDouble(args.get(3)));
+            setPreco(Double.parseDouble(args.get(PRECO_ORDINAL)));
         } catch(NumberFormatException e) {
-            throw new IllegalArgumentException("Preco inválido: " + args.get(3));
+            throw new IllegalArgumentException("Preco inválido: " + args.get(PRECO_ORDINAL));
         }
         try {
-            setCor(Cor.valueOf(args.get(4)));
+            setCor(Cor.valueOf(args.get(COR_ORDINAL)));
         } catch (IllegalArgumentException e) {
-            throw new InvalidColorException("Cor inválida: " + args.get(4));
+            throw new InvalidColorException("Cor inválida: " + args.get(COR_ORDINAL));
         }
     }
 

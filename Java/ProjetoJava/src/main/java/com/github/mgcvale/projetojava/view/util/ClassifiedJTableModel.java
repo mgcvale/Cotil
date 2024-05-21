@@ -16,7 +16,6 @@ public class ClassifiedJTableModel extends DefaultTableModel {
 
     @Override
     public Class<?> getColumnClass(int column) {
-        System.out.println("column clas: " + tableClasses.get(column).toString());
         return tableClasses.get(column);
     }
 

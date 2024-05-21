@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ClienteService implements Serializable, Service<Cliente> {
@@ -47,6 +48,20 @@ public class ClienteService implements Serializable, Service<Cliente> {
         return clientes.stream().filter(cliente -> {
             return cliente.getNome().startsWith(searchTerm);
         }).collect(Collectors.toList());
+    }
+
+    public double getAverageAge() {
+        AtomicInteger runningAvg = new AtomicInteger();
+        clientes.stream().forEach(cliente -> runningAvg.addAndGet(cliente.getIdade()));
+        return runningAvg.doubleValue()/clientes.size();
+    }
+
+    public int getLowerThan18() {
+        return (clientes.stream().filter(cliente -> cliente.getIdade() < 18).toList()).size();
+    }
+
+    public int getOlderThan60() {
+        return (clientes.stream().filter(cliente -> cliente.getIdade() > 60).toList()).size();
     }
 
     @Override

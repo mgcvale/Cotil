@@ -1,7 +1,5 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
-import com.github.mgcvale.projetojava.model.Cliente;
-import com.github.mgcvale.projetojava.model.Funcionario;
 import com.github.mgcvale.projetojava.model.Produto;
 import com.github.mgcvale.projetojava.service.ProdutoService;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
@@ -10,10 +8,15 @@ import com.github.mgcvale.projetojava.model.FieldProvider;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
 
+    private static final String AVG_PRICE_TXT = "Preço Médio: ";
+    private static final String GREATEST_AVG_TXT = "Acima do Preço Médio: ";
     private JLabel avgPriceLabel;
     private JLabel greatestAvgPriceLabel;
 
@@ -26,29 +29,35 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         }
         if(serviceObject == null)
             serviceObject = new ProdutoService();
+        avgPriceLabel = new JLabel(AVG_PRICE_TXT, SwingConstants.CENTER);
+        greatestAvgPriceLabel = new JLabel(GREATEST_AVG_TXT, SwingConstants.CENTER);
         super.initAll();
         addListeners();
+    }
+
+    @Override
+    protected void initComponents() {
+        super.initComponents();
+        searchByCombo = new JComboBox<>(new String[]{"Nome", "Descricao", "Preco", "Cor"});
     }
 
     @Override
     protected void layComponents() {
         super.layComponents();
 
-        avgPriceLabel = new JLabel("Preço Médio: ");
-        greatestAvgPriceLabel = new JLabel("Acima do Preço Médio: ");
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 10, 10, 0);
 
+        // bottom info
         gbc.gridy = 3;
         gbc.gridx = 0;
-        gbc.weighty = 0;
         gbc.weightx = 0.5;
         gbc.gridwidth = 1;
-        searchPanel.add(avgPriceLabel, gbc);
+        gbc.fill = GridBagConstraints.BOTH;
+        searchPane.add(avgPriceLabel, gbc);
 
         gbc.gridx++;
-        searchPanel.add(greatestAvgPriceLabel, gbc);
+        searchPane.add(greatestAvgPriceLabel, gbc);
     }
 
     @Override
@@ -74,9 +83,26 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         }
 
         tableModel.setRowCount(0);
-        for(FieldProvider object : serviceObject.findByName(search)) {
+
+        tableModel.setRowCount(0);
+        List<Produto> objects = serviceObject.getAll();
+        if(!search.isEmpty()) {
+            String selectedSearch = (String) searchByCombo.getSelectedObjects()[0];
+            System.out.println("selected search: " + selectedSearch);
+            switch (selectedSearch) {
+                case "Nome" -> objects = serviceObject.findBy(search, Produto.NOME_ORDINAL);
+                case "Descricao" -> objects = serviceObject.findBy(search, Produto.DESCRICAO_ORDINAL);
+                case "Preco" -> objects = serviceObject.findBy(search, Produto.PRECO_ORDINAL);
+                case "Cor" -> objects = serviceObject.findBy(search, Produto.COR_ORDINAL);
+            }
+            System.out.println(objects);
+        }
+
+        for(FieldProvider object : objects) {
             tableModel.addRow(object.getAllFields().toArray());
         }
+        avgPriceLabel.setText(AVG_PRICE_TXT + serviceObject.getAveragePrice());
+        greatestAvgPriceLabel.setText(GREATEST_AVG_TXT + serviceObject.getAboveAverage());
     }
 
     @Override
@@ -94,5 +120,4 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         serviceObject.add((Produto) object);
         updateTable(searchTf.getText());
     }
-
 }

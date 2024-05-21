@@ -2,12 +2,14 @@ package com.github.mgcvale.projetojava.view.tabs;
 
 import com.github.mgcvale.projetojava.model.Cliente;
 import com.github.mgcvale.projetojava.model.Funcionario;
+import com.github.mgcvale.projetojava.model.Produto;
 import com.github.mgcvale.projetojava.service.FuncionarioService;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
@@ -47,7 +49,6 @@ public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
         if(serviceObject == null) {
             throw new NullPointerException("The service object needs to be instanciated in the superclass!");
         }
-
         tableModel.setRowCount(0);
         for(FieldProvider object : serviceObject.findByName(search)) {
             tableModel.addRow(object.getAllFields().toArray());

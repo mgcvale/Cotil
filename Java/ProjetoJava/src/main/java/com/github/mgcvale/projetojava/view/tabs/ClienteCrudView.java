@@ -1,7 +1,6 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
 import com.github.mgcvale.projetojava.model.Cliente;
-import com.github.mgcvale.projetojava.model.Funcionario;
 import com.github.mgcvale.projetojava.service.ClienteService;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
@@ -17,6 +16,10 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
     private JLabel olderThanSixtyLabel;
     private JLabel avgAgeLabel;
 
+    private static final String YOUNGER_THAN_TXT = "Abaixo de 18 anos: ";
+    private static final String OLDER_THAN_TXT = "Acima de 60 anos: ";
+    private static final String AVG_AGE_TXT = "Idade média: ";
+
     public ClienteCrudView() {
 
         try {
@@ -27,6 +30,9 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
         }
         if(serviceObject == null)
             serviceObject = new ClienteService();
+        youngerThanEighteenLabel = new JLabel(YOUNGER_THAN_TXT, SwingConstants.CENTER);
+        olderThanSixtyLabel = new JLabel(OLDER_THAN_TXT, SwingConstants.CENTER);
+        avgAgeLabel = new JLabel(AVG_AGE_TXT, SwingConstants.CENTER);
         initAll();
     }
 
@@ -34,17 +40,15 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
     protected void layComponents() {
         super.layComponents();
 
-
-        youngerThanEighteenLabel = new JLabel("Abaixo de 18 anos: ");
-        olderThanSixtyLabel = new JLabel("Acima de 60 anos: ");
-        avgAgeLabel = new JLabel("Idade Médio: ");
-        JPanel bottomPane = new JPanel(new GridLayout(1, 3, 10, 0));
+        JPanel bottomPane = new JPanel(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 10, 10, 0);
 
         gbc.gridy = 0;
         gbc.gridx = 0;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.BOTH;
         bottomPane.add(youngerThanEighteenLabel, gbc);
 
         gbc.gridx++;
@@ -56,7 +60,7 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
         gbc.gridy = 3;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
-        searchPanel.add(bottomPane, gbc);
+        searchPane.add(bottomPane, gbc);
     }
 
     @Override
@@ -85,6 +89,9 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
         for(FieldProvider object : serviceObject.findByName(search)) {
             tableModel.addRow(object.getAllFields().toArray());
         }
+        avgAgeLabel.setText(AVG_AGE_TXT + String.format("%.2f", serviceObject.getAverageAge()));
+        youngerThanEighteenLabel.setText(YOUNGER_THAN_TXT + serviceObject.getLowerThan18());
+        olderThanSixtyLabel.setText(OLDER_THAN_TXT + serviceObject.getOlderThan60());
     }
 
     @Override
