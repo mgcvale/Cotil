@@ -1,6 +1,6 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
-import com.github.mgcvale.projetojava.model.Produto;
+import com.github.mgcvale.projetojava.model.Software;
 import com.github.mgcvale.projetojava.service.ProdutoService;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
@@ -20,7 +20,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
 
     public ProdutoCrudView() {
         try {
-            serviceObject = JsonSerializer.importServiceJson("Produto", ProdutoService.class);
+            serviceObject = JsonSerializer.importServiceJson("Software", ProdutoService.class);
         } catch (IOException e) {
             serviceObject = new ProdutoService();
             e.printStackTrace();
@@ -36,7 +36,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
     @Override
     protected void initComponents() {
         super.initComponents();
-        searchByCombo = new JComboBox<>(new String[]{"Nome", "Descricao", "Preco", "Cor"});
+        searchByCombo = new JComboBox<>(new String[]{"Nome", "Descricao", "Preco", "Plataforma"});
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         super.addListeners();
         removeBtn.addActionListener(e -> {
             int selectedID = (int) table.getValueAt(table.getSelectedRow(), 0);
-            Optional<Produto> obj = serviceObject.getById(selectedID);
+            Optional<Software> obj = serviceObject.getById(selectedID);
             if(obj.isPresent()) {
                 serviceObject.remove(obj.get());
             } else {
@@ -83,15 +83,15 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         tableModel.setRowCount(0);
 
         tableModel.setRowCount(0);
-        List<Produto> objects = serviceObject.getAll();
+        List<Software> objects = serviceObject.getAll();
         if(!search.isEmpty()) {
             String selectedSearch = (String) searchByCombo.getSelectedObjects()[0];
             System.out.println("selected search: " + selectedSearch);
             switch (selectedSearch) {
-                case "Nome" -> objects = serviceObject.findBy(search, Produto.NOME_ORDINAL);
-                case "Descricao" -> objects = serviceObject.findBy(search, Produto.DESCRICAO_ORDINAL);
-                case "Preco" -> objects = serviceObject.findBy(search, Produto.PRECO_ORDINAL);
-                case "Cor" -> objects = serviceObject.findBy(search, Produto.COR_ORDINAL);
+                case "Nome" -> objects = serviceObject.findBy(search, Software.NOME_ORDINAL);
+                case "Descricao" -> objects = serviceObject.findBy(search, Software.DESCRICAO_ORDINAL);
+                case "Preco" -> objects = serviceObject.findBy(search, Software.PRECO_ORDINAL);
+                case "Plataforma" -> objects = serviceObject.findBy(search, Software.COR_ORDINAL);
             }
             System.out.println(objects);
         }
@@ -99,14 +99,14 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
         for(FieldProvider object : objects) {
             tableModel.addRow(object.getAllFields().toArray());
         }
-        avgPriceLabel.setText(AVG_PRICE_TXT + serviceObject.getAveragePrice());
+        avgPriceLabel.setText(AVG_PRICE_TXT + String.format("%.2f", serviceObject.getAveragePrice()));
         greatestAvgPriceLabel.setText(GREATEST_AVG_TXT + serviceObject.getAboveAverage());
     }
 
     @Override
     public void refreshTable() {
         try {
-            serviceObject = JsonSerializer.importServiceJson("Produto", ProdutoService.class);
+            serviceObject = JsonSerializer.importServiceJson("Software", ProdutoService.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -115,7 +115,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
 
     @Override
     public void objectCreated(FieldProvider object) {
-        serviceObject.add((Produto) object);
+        serviceObject.add((Software) object);
         updateTable(searchTf.getText());
     }
 }
