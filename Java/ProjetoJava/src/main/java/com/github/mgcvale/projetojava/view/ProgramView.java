@@ -1,10 +1,13 @@
 package com.github.mgcvale.projetojava.view;
 
+import com.github.mgcvale.projetojava.config.AppProperties;
+import com.github.mgcvale.projetojava.config.ThemeManager;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.view.tabs.AbstractCrudView;
 import com.github.mgcvale.projetojava.view.tabs.ClienteCrudView;
 import com.github.mgcvale.projetojava.view.tabs.FuncionarioCrudView;
 import com.github.mgcvale.projetojava.view.tabs.ProdutoCrudView;
+import com.github.mgcvale.projetojava.view.util.ThemeAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,8 +24,11 @@ public class ProgramView extends JFrame {
     private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private JMenuBar menuBar;
     private JMenu fileMenu;
+    private JMenu preferencesMenu;
+    private JMenu themeComboBox;
     private JMenuItem save;
     private JMenuItem refresh;
+    private final JFrame thisJFrame = this;
 
     public void createAndShowGUI() {
         initComponents();
@@ -50,12 +56,34 @@ public class ProgramView extends JFrame {
         save = new JMenuItem("Salvar modificacões");
         refresh = new JMenuItem("Atualizar lista");
 
+        preferencesMenu = new JMenu("Preferências");
+        themeComboBox = new JMenu("Tema");
         fileMenu = new JMenu("Arquivo");
         fileMenu.add(save);
         fileMenu.add(refresh);
 
+        ThemeAction.Observer observer = new ThemeAction.Observer() {
+            @Override
+            public void themeChanged(ThemeAction action, String value) {
+                try {
+                    AppProperties properties = JsonSerializer.importJson("properties", AppProperties.class);
+                    properties.currentTheme = action.getValue();
+                    JsonSerializer.serializeObject(properties, "properties");
+                    ThemeManager.updateTheme(thisJFrame);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        themeComboBox.add(new ThemeAction("Escuro mac", "macdark", observer));
+        themeComboBox.add(new ThemeAction("Claro mac", "maclight", observer));
+        themeComboBox.add(new ThemeAction("Padrão escuro", "flatdark", observer));
+        themeComboBox.add(new ThemeAction("Padrao claro", "flatlight", observer));
+        preferencesMenu.add(themeComboBox);
+
         menuBar = new JMenuBar();
         menuBar.add(fileMenu);
+        menuBar.add(preferencesMenu);
     }
 
     private void layComponents() {
@@ -102,9 +130,9 @@ public class ProgramView extends JFrame {
     }
 
     private void exportJsons() throws IOException {
-        JsonSerializer.exportToJson(clienteCrudView.getService());
-        JsonSerializer.exportToJson(produtoCrudView.getService());
-        JsonSerializer.exportToJson(funcionarioCrudView.getService());
+        JsonSerializer.serializeService(clienteCrudView.getService());
+        JsonSerializer.serializeService(produtoCrudView.getService());
+        JsonSerializer.serializeService(funcionarioCrudView.getService());
     }
 
 }

@@ -20,14 +20,14 @@ public class JsonSerializer {
         JsonSerializer.dataDir = dataDir;
     }
 
-    public static String serialize(Service service) {
+    public static String serializeToString(Object service) {
         String json = gson.toJson(service);
         return json;
     }
 
-    public static void exportToJson(Service service) throws IOException {
+    public static void serializeService(Service service) throws IOException {
         //serialize class and get json file
-        String json = serialize(service);
+        String json = serializeToString(service);
         File jsonFile = new File(getFileDir(service));
         jsonFile.createNewFile();
 
@@ -36,9 +36,23 @@ public class JsonSerializer {
         fw.close();
     }
 
-    public static <T> T importJson(String className, Class<T> classOfT) throws IOException {
+    public static void serializeObject(Object object, String name) throws IOException{
+        String json = serializeToString(object);
+        File jsonFile = new File((dataDir + "/" + name + ".json"));
+
+        FileWriter fw = new FileWriter(jsonFile);
+        fw.write(json);
+        fw.close();
+    }
+
+    public static <T> T importServiceJson(String serviceName, Class<T> classOfT) throws IOException {
         //read the file into a string
-        String json = FileUtils.readAll(getFileDir(className));
+        String json = FileUtils.readAll(getFileDir(serviceName));
+        return gson.fromJson(json, classOfT);
+    }
+
+    public static <T> T importJson(String jsonName, Class<T> classOfT) throws IOException {
+        String json = FileUtils.readAll(dataDir + "/" + jsonName + ".json");
         return gson.fromJson(json, classOfT);
     }
 

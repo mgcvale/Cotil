@@ -1,7 +1,5 @@
 package com.github.mgcvale.projetojava.model;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class Cliente extends Pessoa implements IPessoa, FieldProvider {

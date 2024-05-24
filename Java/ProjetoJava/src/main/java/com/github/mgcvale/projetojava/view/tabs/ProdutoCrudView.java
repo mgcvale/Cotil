@@ -8,9 +8,7 @@ import com.github.mgcvale.projetojava.model.FieldProvider;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
@@ -22,7 +20,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
 
     public ProdutoCrudView() {
         try {
-            serviceObject = JsonSerializer.importJson("Produto", ProdutoService.class);
+            serviceObject = JsonSerializer.importServiceJson("Produto", ProdutoService.class);
         } catch (IOException e) {
             serviceObject = new ProdutoService();
             e.printStackTrace();
@@ -108,7 +106,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
     @Override
     public void refreshTable() {
         try {
-            serviceObject = JsonSerializer.importJson("Produto", ProdutoService.class);
+            serviceObject = JsonSerializer.importServiceJson("Produto", ProdutoService.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

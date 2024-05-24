@@ -1,10 +1,15 @@
 package com.github.mgcvale.projetojava;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.github.mgcvale.projetojava.model.Cliente;
-import com.github.mgcvale.projetojava.model.Produto;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+import com.github.mgcvale.projetojava.config.AppProperties;
+import com.github.mgcvale.projetojava.config.ThemeManager;
+import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.view.ProgramView;
-import com.github.mgcvale.projetojava.view.dialogs.ObjectAdderDialog;
 
 import javax.swing.*;
 import java.io.File;
@@ -16,7 +21,7 @@ public class Application {
         //verify if the folder where the jsons will be sored exists; if not, create it and the empty jsons
         String jsonDir = System.getProperty("user.home") + "/JavaProjects/json";
         File jsonFolder = new File(jsonDir);
-        String[] jsonNames = new String[]{"Cliente.json", "Produto.json", "Funcionario.json"};
+        String[] jsonNames = new String[]{"Cliente.json", "Produto.json", "Funcionario.json", "properties.json"};
         if(!jsonFolder.exists()) {
             jsonFolder.mkdirs();
         }
@@ -25,17 +30,15 @@ public class Application {
             if(!jsonFile.exists()) {
                 try {
                     jsonFile.createNewFile();
+                    if(jsonFile.getName().equals(("properties.json"))) {
+                        JsonSerializer.serializeObject(new AppProperties(), "properties");
+                    }
                 } catch (IOException e) {
                     System.err.println("Couldn't create json files! data may not be saved");
                 }
             }
         }
-
-
-        //set theme
-        try {
-            UIManager.setLookAndFeel(new FlatMacDarkLaf());
-        } catch(UnsupportedLookAndFeelException ignored) {}
+        ThemeManager.updateTheme(new JFrame());
 
         //create gui
         SwingUtilities.invokeLater(() -> {

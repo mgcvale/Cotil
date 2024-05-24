@@ -3,6 +3,7 @@ package com.github.mgcvale.projetojava.view.tabs;
 import com.github.mgcvale.projetojava.service.Service;
 import com.github.mgcvale.projetojava.view.dialogs.ObjectAdderDialog;
 import com.github.mgcvale.projetojava.view.dialogs.ObjectCreationListener;
+import com.github.mgcvale.projetojava.view.util.ClassifiedJTable;
 import com.github.mgcvale.projetojava.view.util.ClassifiedJTableModel;
 import com.github.mgcvale.projetojava.view.util.JTableUtils;
 import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
@@ -19,9 +20,10 @@ import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public abstract class AbstractCrudView<T extends Service<?>> extends JPanel implements ObjectCreationListener {
     protected JScrollPane scrollPane;
-    protected JTable table;
+    protected ClassifiedJTable table;
     protected ClassifiedJTableModel tableModel;
     protected T serviceObject;
     protected JButton addBtn, removeBtn;
@@ -60,7 +62,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
         //table model and scroll pane
         tableModel = new UneditableTableModel();
 
-        table = new JTable(tableModel);
+        table = new ClassifiedJTable(tableModel);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JLabel headerLabels = (JLabel) table.getTableHeader().getDefaultRenderer();
         headerLabels.setHorizontalAlignment(SwingConstants.CENTER);
@@ -81,11 +83,14 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             //array lists to store the columns that should be a little smaller
             ArrayList<Integer> smallColumnsIndexes = new ArrayList<>();
             ArrayList<Integer> mediumColumnsIndexes = new ArrayList<>();
+            // list of the types of the pojo object class for accurate table sorting
             List<Object> typeInstances = serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldTypesAsInstance();
 
             for (String fieldName : serviceObject.getServiceClass().getDeclaredConstructor().newInstance().getFieldNames()) {
                 tableModel.addColumn(fieldName);
                 tableModel.setColumnClass(tableModel.getColumnCount()-1, typeInstances.get(tableModel.getColumnCount()-1).getClass());
+                table.setColumnClass(tableModel.getColumnCount()-1, typeInstances.get(tableModel.getColumnCount()-1).getClass());
+
                 if(fieldName.equals("idade") || fieldName.equals("id")) {
                     smallColumnsIndexes.add(table.getColumnCount()-1);
                 }
@@ -238,7 +243,9 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
     protected void updateInfoPanel(int objectIndex) {
         System.out.println("updated: " + objectIndex);
 
-        if(objectIndex == -1) { // the selection is null
+        if(objectIndex == -1) {// the selection is null
+
+            //remove everything, add placeholder text and revalidate layout
             infoPane.removeAll();
             infoPane.setLayout(new BorderLayout());
             JLabel warning = new JLabel("Nenhum " + serviceObject.getObjectName() + " selecionado!");
@@ -247,7 +254,6 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             removeBtn.setEnabled(false);
 
             revalidate();
-            repaint();
             return;
         }
 
@@ -266,10 +272,10 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             infoPane.add(info);
         }
 
+        // set min size so that the layout manager doesn't make it tiny and it linebreaks like crazy, and revalidate layout
         infoPane.setMinimumSize(new Dimension(getWidth()/4, getHeight()));
         removeBtn.setEnabled(true);
         revalidate();
-        repaint();
     }
 
     public Class<? extends Service> getServiceClass() {

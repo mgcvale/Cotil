@@ -1,15 +1,12 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
-import com.github.mgcvale.projetojava.model.Cliente;
 import com.github.mgcvale.projetojava.model.Funcionario;
-import com.github.mgcvale.projetojava.model.Produto;
 import com.github.mgcvale.projetojava.service.FuncionarioService;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 
 import javax.swing.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
@@ -17,7 +14,7 @@ public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
     public FuncionarioCrudView() {
 
         try {
-            serviceObject = JsonSerializer.importJson("Funcionario", FuncionarioService.class);
+            serviceObject = JsonSerializer.importServiceJson("Funcionario", FuncionarioService.class);
         } catch (IOException e) {
             serviceObject = new FuncionarioService();
             e.printStackTrace();
@@ -58,7 +55,7 @@ public class FuncionarioCrudView extends AbstractCrudView<FuncionarioService> {
     @Override
     public void refreshTable() {
         try {
-            serviceObject = JsonSerializer.importJson("Funcionario", FuncionarioService.class);
+            serviceObject = JsonSerializer.importServiceJson("Funcionario", FuncionarioService.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
