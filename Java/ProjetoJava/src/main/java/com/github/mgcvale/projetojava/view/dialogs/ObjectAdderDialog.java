@@ -1,6 +1,6 @@
 package com.github.mgcvale.projetojava.view.dialogs;
 
-import com.github.mgcvale.projetojava.model.Cor;
+import com.github.mgcvale.projetojava.model.Plataforma;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 import com.github.mgcvale.projetojava.view.util.PlaceholderTextField;
 
@@ -29,6 +29,7 @@ public class ObjectAdderDialog extends JFrame {
     public ObjectAdderDialog(FieldProvider provider) {
         objectInstance = provider;
         dataQuantity = provider.getFieldNames().size();
+        setTitle("Adicionar " + provider.getClass().getSimpleName());
     }
 
     public void addObjectCreationListener(ObjectCreationListener l) {
@@ -71,8 +72,8 @@ public class ObjectAdderDialog extends JFrame {
                 JCheckBox fieldInput = new JCheckBox(fieldLabels[i].getText().substring(0, fieldLabels[i].getText().length()-1));
                 fieldInputs.add(fieldInput);
             }
-            if(obj instanceof Cor) {
-                fieldInputs.add(new JComboBox<>(Cor.values()));
+            if(obj instanceof Plataforma) {
+                fieldInputs.add(new JComboBox<>(Plataforma.values()));
 
             }
         }

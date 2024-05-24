@@ -21,7 +21,7 @@ public class Application {
         //verify if the folder where the jsons will be sored exists; if not, create it and the empty jsons
         String jsonDir = System.getProperty("user.home") + "/JavaProjects/json";
         File jsonFolder = new File(jsonDir);
-        String[] jsonNames = new String[]{"Cliente.json", "Produto.json", "Funcionario.json", "properties.json"};
+        String[] jsonNames = new String[]{"Cliente.json", "Software.json", "Funcionario.json", "properties.json"};
         if(!jsonFolder.exists()) {
             jsonFolder.mkdirs();
         }

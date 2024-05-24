@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-public class ProdutoService implements Serializable, Service<Software> {
+public class SoftwareService implements Serializable, Service<Software> {
 
     private ArrayList<Software> softwares = new ArrayList<Software>();
 
@@ -68,7 +68,7 @@ public class ProdutoService implements Serializable, Service<Software> {
 
     @Override
     public String getObjectName() {
-        return "Produto";
+        return "Software";
     }
 
     @Override

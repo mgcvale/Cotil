@@ -5,7 +5,7 @@ import com.github.mgcvale.projetojava.exception.InvalidColorException;
 import java.io.Serializable;
 import java.util.List;
 
-public class Produto implements FieldProvider, Serializable {
+public class Software implements FieldProvider, Serializable {
     public final static int ID_ORDINAL = 0;
     public final static int NOME_ORDINAL = 1;
     public final static int DESCRICAO_ORDINAL = 2;
@@ -16,17 +16,17 @@ public class Produto implements FieldProvider, Serializable {
     private String descricao;
     private int id;
     private double preco;
-    private Cor cor;
+    private Plataforma plataforma;
 
-    public Produto(int id, String nome, String descricao, double preco, Cor cor) {
+    public Software(int id, String nome, String descricao, double preco, Plataforma plataforma) {
         this.nome = nome;
         this.descricao = descricao;
         this.id = id;
         setPreco(preco);
-        this.cor = cor;
+        this.plataforma = plataforma;
     }
 
-    public Produto(List<String> args) {
+    public Software(List<String> args) {
         setNome(args.get(NOME_ORDINAL));
         setDescricao(args.get(DESCRICAO_ORDINAL));
         try {
@@ -40,13 +40,13 @@ public class Produto implements FieldProvider, Serializable {
             throw new IllegalArgumentException("Preco inválido: " + args.get(PRECO_ORDINAL));
         }
         try {
-            setCor(Cor.valueOf(args.get(COR_ORDINAL)));
+            setCor(Plataforma.valueOf(args.get(COR_ORDINAL)));
         } catch (IllegalArgumentException e) {
-            throw new InvalidColorException("Cor inválida: " + args.get(COR_ORDINAL));
+            throw new InvalidColorException("Plataforma inválida: " + args.get(COR_ORDINAL));
         }
     }
 
-    public Produto(String id, String nome, String descricao, String preco, String cor) throws NumberFormatException, InvalidColorException {
+    public Software(String id, String nome, String descricao, String preco, String cor) throws NumberFormatException, InvalidColorException {
         setNome(nome);
         setDescricao(descricao);
         try {
@@ -60,13 +60,13 @@ public class Produto implements FieldProvider, Serializable {
             throw new IllegalArgumentException("Preco inválido: " + preco);
         }
         try {
-            setCor(Cor.valueOf(cor));
+            setCor(Plataforma.valueOf(cor));
         } catch (IllegalArgumentException e) {
-            throw new InvalidColorException("Cor inválida: " + cor);
+            throw new InvalidColorException("Plataforma inválida: " + cor);
         }
     }
 
-    public Produto() {}
+    public Software() {}
 
     public String getNome() {
         return nome;
@@ -100,37 +100,37 @@ public class Produto implements FieldProvider, Serializable {
         this.preco = Math.max(0, preco);
     }
 
-    public Cor getCor() {
-        return cor;
+    public Plataforma getCor() {
+        return plataforma;
     }
 
-    public void setCor(Cor cor) {
-        this.cor = cor;
+    public void setCor(Plataforma plataforma) {
+        this.plataforma = plataforma;
     }
 
     @Override
     public String toString() {
-        return "Produto{" +
+        return "Software{" +
                 "nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
                 ", id=" + id +
                 ", preco=" + preco +
-                ", cor=" + cor +
+                ", plataforma=" + plataforma +
                 '}';
     }
 
     @Override
     public List<Object> getAllFields() {
-        return List.of(id, nome, descricao, preco, cor);
+        return List.of(id, nome, descricao, preco, plataforma);
     }
 
     @Override
     public List<String> getFieldNames() {
-        return List.of("id", "nome", "descricao", "preco", "cor");
+        return List.of("id", "nome", "descricao", "preco", "plataforma");
     }
 
     @Override
     public List<Object> getFieldTypesAsInstance() {
-        return List.of(0, "", "", 0d, Cor.PRETO);
+        return List.of(0, "", "", 0d, Plataforma.DESKTOP);
     }
 }

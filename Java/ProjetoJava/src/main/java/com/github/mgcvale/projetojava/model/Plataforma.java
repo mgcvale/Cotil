@@ -1,9 +1,8 @@
 package com.github.mgcvale.projetojava.model;
 
-public enum Cor {
-    PRETO,
-    BRANCO,
-    CINZA,
-    VERMELHO,
-    OUTRO
+public enum Plataforma {
+    MOBILE,
+    DESKTOP,
+    WEB,
+    EMBARCADO
 }

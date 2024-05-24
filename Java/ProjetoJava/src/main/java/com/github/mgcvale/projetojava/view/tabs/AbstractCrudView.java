@@ -268,7 +268,7 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
             JTextArea info = new JTextArea(fieldNames[i] + ": " + fields[i]);
             info.setLineWrap(true);
             info.setBorder(BorderFactory.createEmptyBorder());
-            info.setBackground(UIManager.getColor("label.background"));
+            info.setBackground(UIManager.getColor("panel.background"));
             infoPane.add(info);
         }
 

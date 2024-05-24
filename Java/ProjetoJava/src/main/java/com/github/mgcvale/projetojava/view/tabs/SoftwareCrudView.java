@@ -1,7 +1,7 @@
 package com.github.mgcvale.projetojava.view.tabs;
 
 import com.github.mgcvale.projetojava.model.Software;
-import com.github.mgcvale.projetojava.service.ProdutoService;
+import com.github.mgcvale.projetojava.service.SoftwareService;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.model.FieldProvider;
 
@@ -11,22 +11,22 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
+public class SoftwareCrudView extends AbstractCrudView<SoftwareService> {
 
     private static final String AVG_PRICE_TXT = "Preço Médio: ";
     private static final String GREATEST_AVG_TXT = "Acima do Preço Médio: ";
     private JLabel avgPriceLabel;
     private JLabel greatestAvgPriceLabel;
 
-    public ProdutoCrudView() {
+    public SoftwareCrudView() {
         try {
-            serviceObject = JsonSerializer.importServiceJson("Software", ProdutoService.class);
+            serviceObject = JsonSerializer.importServiceJson("Software", SoftwareService.class);
         } catch (IOException e) {
-            serviceObject = new ProdutoService();
+            serviceObject = new SoftwareService();
             e.printStackTrace();
         }
         if(serviceObject == null)
-            serviceObject = new ProdutoService();
+            serviceObject = new SoftwareService();
         avgPriceLabel = new JLabel(AVG_PRICE_TXT, SwingConstants.CENTER);
         greatestAvgPriceLabel = new JLabel(GREATEST_AVG_TXT, SwingConstants.CENTER);
         super.initAll();
@@ -67,7 +67,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
             if(obj.isPresent()) {
                 serviceObject.remove(obj.get());
             } else {
-                JOptionPane.showMessageDialog(ProdutoCrudView.this,
+                JOptionPane.showMessageDialog(SoftwareCrudView.this,
                         "Parece que esta entrada não existe; tente atualizar a lista de entradas ou reiniciar o programa.");
             }
             updateTable();
@@ -106,7 +106,7 @@ public class ProdutoCrudView extends AbstractCrudView<ProdutoService> {
     @Override
     public void refreshTable() {
         try {
-            serviceObject = JsonSerializer.importServiceJson("Software", ProdutoService.class);
+            serviceObject = JsonSerializer.importServiceJson("Software", SoftwareService.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -6,7 +6,7 @@ import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 import com.github.mgcvale.projetojava.view.tabs.AbstractCrudView;
 import com.github.mgcvale.projetojava.view.tabs.ClienteCrudView;
 import com.github.mgcvale.projetojava.view.tabs.FuncionarioCrudView;
-import com.github.mgcvale.projetojava.view.tabs.ProdutoCrudView;
+import com.github.mgcvale.projetojava.view.tabs.SoftwareCrudView;
 import com.github.mgcvale.projetojava.view.util.ThemeAction;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class ProgramView extends JFrame {
     private ClienteCrudView clienteCrudView;
     private FuncionarioCrudView funcionarioCrudView;
-    private ProdutoCrudView produtoCrudView;
+    private SoftwareCrudView softwareCrudView;
     private JTabbedPane tabbedPane;
 
     private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -49,12 +49,13 @@ public class ProgramView extends JFrame {
         tabbedPane = new JTabbedPane();
         clienteCrudView = new ClienteCrudView();
         funcionarioCrudView = new FuncionarioCrudView();
-        produtoCrudView = new ProdutoCrudView();
+        softwareCrudView = new SoftwareCrudView();
     }
 
     private void initMenu() {
         save = new JMenuItem("Salvar modificacões");
-        refresh = new JMenuItem("Atualizar lista");
+        refresh = new JMenuItem("Recarregar json");
+        refresh.setToolTipText("Sobreescreverá os conteudos da aplicacao com os escritos nos arquivos JSON");
 
         preferencesMenu = new JMenu("Preferências");
         themeComboBox = new JMenu("Tema");
@@ -62,17 +63,14 @@ public class ProgramView extends JFrame {
         fileMenu.add(save);
         fileMenu.add(refresh);
 
-        ThemeAction.Observer observer = new ThemeAction.Observer() {
-            @Override
-            public void themeChanged(ThemeAction action, String value) {
-                try {
-                    AppProperties properties = JsonSerializer.importJson("properties", AppProperties.class);
-                    properties.currentTheme = action.getValue();
-                    JsonSerializer.serializeObject(properties, "properties");
-                    ThemeManager.updateTheme(thisJFrame);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        ThemeAction.Observer observer = (action, value) -> {
+            try {
+                AppProperties properties = JsonSerializer.importJson("properties", AppProperties.class);
+                properties.currentTheme = action.getValue();
+                JsonSerializer.serializeObject(properties, "properties");
+                ThemeManager.updateTheme(thisJFrame);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         };
         themeComboBox.add(new ThemeAction("Escuro mac", "macdark", observer));
@@ -89,7 +87,7 @@ public class ProgramView extends JFrame {
     private void layComponents() {
         tabbedPane.addTab("Cliente", clienteCrudView);
         tabbedPane.addTab("Funcionario", funcionarioCrudView);
-        tabbedPane.addTab("Produto", produtoCrudView);
+        tabbedPane.addTab("Software", softwareCrudView);
     }
 
 
@@ -131,7 +129,7 @@ public class ProgramView extends JFrame {
 
     private void exportJsons() throws IOException {
         JsonSerializer.serializeService(clienteCrudView.getService());
-        JsonSerializer.serializeService(produtoCrudView.getService());
+        JsonSerializer.serializeService(softwareCrudView.getService());
         JsonSerializer.serializeService(funcionarioCrudView.getService());
     }
 
