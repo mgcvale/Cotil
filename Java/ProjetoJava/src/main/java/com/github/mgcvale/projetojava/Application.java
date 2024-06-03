@@ -25,6 +25,7 @@ public class Application {
         if(!jsonFolder.exists()) {
             jsonFolder.mkdirs();
         }
+        //create empty jsons if there are any
         for(String jsonName : jsonNames) {
             File jsonFile = new File(jsonDir + "/" + jsonName);
             if(!jsonFile.exists()) {

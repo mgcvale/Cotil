@@ -19,7 +19,7 @@ public class FileUtils {
             }
         } finally {
             br.close();
-            return sb.toString();
         }
+        return sb.toString();
     }
 }

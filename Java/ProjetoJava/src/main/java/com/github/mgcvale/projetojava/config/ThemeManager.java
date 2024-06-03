@@ -7,7 +7,6 @@ import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import com.github.mgcvale.projetojava.serializer.JsonSerializer;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 
 public class ThemeManager {

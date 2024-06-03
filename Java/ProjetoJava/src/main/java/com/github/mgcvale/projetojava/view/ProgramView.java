@@ -28,7 +28,6 @@ public class ProgramView extends JFrame {
     private JMenu themeComboBox;
     private JMenuItem save;
     private JMenuItem refresh;
-    private final JFrame thisJFrame = this;
 
     public void createAndShowGUI() {
         initComponents();
@@ -68,7 +67,7 @@ public class ProgramView extends JFrame {
                 AppProperties properties = JsonSerializer.importJson("properties", AppProperties.class);
                 properties.currentTheme = action.getValue();
                 JsonSerializer.serializeObject(properties, "properties");
-                ThemeManager.updateTheme(thisJFrame);
+                ThemeManager.updateTheme(ProgramView.this);
             } catch (Exception e) {
                 e.printStackTrace();
             }

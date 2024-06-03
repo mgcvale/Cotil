@@ -90,7 +90,6 @@ public abstract class AbstractCrudView<T extends Service<?>> extends JPanel impl
                 tableModel.addColumn(fieldName);
                 tableModel.setColumnClass(tableModel.getColumnCount()-1, typeInstances.get(tableModel.getColumnCount()-1).getClass());
                 table.setColumnClass(tableModel.getColumnCount()-1, typeInstances.get(tableModel.getColumnCount()-1).getClass());
-
                 if(fieldName.equals("idade") || fieldName.equals("id")) {
                     smallColumnsIndexes.add(table.getColumnCount()-1);
                 }

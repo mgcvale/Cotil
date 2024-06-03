@@ -19,10 +19,6 @@ public class ClienteService implements Serializable, Service<Cliente> {
     }
 
     public void remove(Cliente cliente) {
-        if(clientes.contains(cliente))
-            System.out.println("contém; dá pra remover");
-        else
-            System.out.println("nao contém; n da pra remover");
         clientes.remove(cliente);
     }
 
@@ -52,7 +48,7 @@ public class ClienteService implements Serializable, Service<Cliente> {
 
     public double getAverageAge() {
         AtomicInteger runningAvg = new AtomicInteger();
-        clientes.stream().forEach(cliente -> runningAvg.addAndGet(cliente.getIdade()));
+        clientes.forEach(cliente -> runningAvg.addAndGet(cliente.getIdade()));
         return runningAvg.doubleValue()/clientes.size();
     }
 

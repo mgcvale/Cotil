@@ -21,7 +21,6 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
     private static final String AVG_AGE_TXT = "Idade média: ";
 
     public ClienteCrudView() {
-
         try {
             serviceObject = JsonSerializer.importServiceJson("Cliente", ClienteService.class);
         } catch (IOException e) {
@@ -30,6 +29,7 @@ public class ClienteCrudView extends AbstractCrudView<ClienteService> {
         }
         if(serviceObject == null)
             serviceObject = new ClienteService();
+
         youngerThanEighteenLabel = new JLabel(YOUNGER_THAN_TXT, SwingConstants.CENTER);
         olderThanSixtyLabel = new JLabel(OLDER_THAN_TXT, SwingConstants.CENTER);
         avgAgeLabel = new JLabel(AVG_AGE_TXT, SwingConstants.CENTER);
